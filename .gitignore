@@ -88,3 +88,9 @@ node_modules
 
 # phantomjs
 ghostdriver.log
+
+# vim
+**.swp
+
+# nox
+.nox/*
