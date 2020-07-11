@@ -11,7 +11,7 @@ except ImportError:
 
 readme_file = path.join(path.dirname(path.abspath(__file__)), "README.md")
 try:
-    from m2r import parse_from_file
+    from m2r2 import parse_from_file
 
     readme = parse_from_file(readme_file)
 except ImportError:
@@ -28,6 +28,7 @@ setup(
     version="0.2.3",
     description="Markdown and reStructuredText in a single file.",
     long_description=readme,
+    long_description_content_type="text/markdown",
     author="Hiroyuki Takagi",
     author_email="miyako.dev@gmail.com",
     maintainer="CrossNox",
