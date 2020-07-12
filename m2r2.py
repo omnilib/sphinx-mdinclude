@@ -22,7 +22,7 @@ else:
     _open = open
     from urllib.parse import urlparse
 
-__version__ = "0.2.1"
+__version__ = "0.2.4"
 _is_sphinx = False
 prolog = """\
 .. role:: raw-html-m2r(raw)
@@ -499,11 +499,11 @@ class RestRenderer(mistune.Renderer):
         return text
 
     def inline_math(self, math):
-        """Extension of recommonmark"""
+        """Extension of recommonmark."""
         return r"\ :math:`{}`\ ".format(math)
 
     def eol_literal_marker(self, marker):
-        """Extension of recommonmark"""
+        """Extension of recommonmark."""
         return marker
 
     def directive(self, text):

@@ -1,0 +1,4 @@
+[bump]
+input = m2r2.py
+minor = false
+patch = true

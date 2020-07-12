@@ -4,6 +4,8 @@
 import sys
 from os import path
 
+from m2r2 import __version__
+
 try:
     from setuptools import setup
 except ImportError:
@@ -18,6 +20,7 @@ except ImportError:
     with open(readme_file) as f:
         readme = f.read()
 
+
 install_requires = ["mistune", "docutils"]
 test_requirements = ["pygments"]
 if sys.version_info < (3, 3):
@@ -25,7 +28,7 @@ if sys.version_info < (3, 3):
 
 setup(
     name="m2r2",
-    version="0.2.3",
+    version=__version__,
     description="Markdown and reStructuredText in a single file.",
     long_description=readme,
     long_description_content_type="text/markdown",

@@ -1,5 +1,9 @@
 ## Version 0.3.0
 
+### Version 0.2.4 (2020-07-12)
+* Central versioning
+* Add bump
+
 ### Version 0.2.3 (2020-07-09)
 * Fix https://github.com/miyakogi/m2r/issues/51
 * Change `tox` for `nox`
