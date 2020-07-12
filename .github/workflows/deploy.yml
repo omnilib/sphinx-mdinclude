@@ -3,6 +3,8 @@ name: Deploy to pypi
 on:
   push:
     branches: master
+    tags:
+      - 'v*.*.*'
 
 jobs:
   untagged_deploy:
