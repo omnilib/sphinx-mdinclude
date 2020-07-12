@@ -158,14 +158,14 @@ If you find any bug or unexpected behaviour, please report it to
 See [example document](https://crossnox.github.io/m2r/example.html) and [its
 source code](https://github.com/crossnox/m2r/blob/master/docs/example.md).
 
-_Note from the original author:_ I'm using m2r for writing user guide of [WDOM](https://github.com/miyakogi/wdom).
+*Note from the original author:* I'm using m2r for writing user guide of [WDOM](https://github.com/miyakogi/wdom).
 So you can see it as another example. Its [HTML is
 here](http://wdom-py.readthedocs.io/en/latest/guide/index.html), and [its
 source code is here](https://github.com/miyakogi/wdom/tree/dev/docs/guide).
 
 ### Demo editor
 
-_Note:_ This hasn't received any updates.
+*Note:* This hasn't received any updates.
 
 Demo editor of m2r is available.
 If you are interested in m2r, please try it.
