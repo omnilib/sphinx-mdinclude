@@ -35,7 +35,7 @@ setup(
     maintainer_email="ijmermet+m2r2@gmail.com",
     url="https://github.com/crossnox/m2r",
     py_modules=["m2r2"],
-    entry_points={"console_scripts": "m2r = m2r:main"},
+    entry_points={"console_scripts": "m2r2 = m2r2:main"},
     include_package_data=True,
     license="MIT",
     zip_safe=False,

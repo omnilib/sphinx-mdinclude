@@ -10,16 +10,19 @@ from copy import copy
 from unittest import TestCase
 import subprocess
 
-from m2r import parse_from_file, main, options
+from m2r2 import parse_from_file, main, options
 
-if sys.version_info < (3, ):
+if sys.version_info < (3,):
     from mock import patch
+
     _builtin = '__builtin__'
     from codecs import open as _open
     from functools import partial
+
     open = partial(_open, encoding='utf-8')
 else:
     from unittest.mock import patch
+
     _builtin = 'builtins'
 
 curdir = path.dirname(path.abspath(__file__))
@@ -46,10 +49,7 @@ class TestConvert(TestCase):
             f.write(self._orig_rst)
 
     def test_no_file(self):
-        p = subprocess.Popen(
-            [sys.executable, '-m', 'm2r'],
-            stdout=subprocess.PIPE,
-        )
+        p = subprocess.Popen([sys.executable, '-m', 'm2r2'], stdout=subprocess.PIPE,)
         p.wait()
         self.assertEqual(p.returncode, 0)
         with p.stdout as buffer:
@@ -120,24 +120,20 @@ class TestConvert(TestCase):
         self.assertNotIn('test', first_line)
 
     def test_underscore_option(self):
-        sys.argv = [
-            sys.argv[0], '--no-underscore-emphasis', '--dry-run', test_md]
+        sys.argv = [sys.argv[0], '--no-underscore-emphasis', '--dry-run', test_md]
         with patch(_builtin + '.print') as m:
             main()
         self.assertIn('__content__', m.call_args[0][0])
         self.assertNotIn('**content**', m.call_args[0][0])
 
     def test_anonymous_reference_option(self):
-        sys.argv = [
-            sys.argv[0], '--anonymous-references', '--dry-run', test_md]
+        sys.argv = [sys.argv[0], '--anonymous-references', '--dry-run', test_md]
         with patch(_builtin + '.print') as m:
             main()
-        self.assertIn("`A link to GitHub <http://github.com/>`__",
-                      m.call_args[0][0])
+        self.assertIn("`A link to GitHub <http://github.com/>`__", m.call_args[0][0])
 
     def test_disable_inline_math(self):
-        sys.argv = [
-            sys.argv[0], '--disable-inline-math', '--dry-run', test_md]
+        sys.argv = [sys.argv[0], '--disable-inline-math', '--dry-run', test_md]
         with patch(_builtin + '.print') as m:
             main()
         self.assertIn('``$E = mc^2$``', m.call_args[0][0])
