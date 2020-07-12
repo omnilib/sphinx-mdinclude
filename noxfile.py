@@ -33,7 +33,7 @@ def cop(session):
 def bandit(session):
     """Run bandit."""
     session.install("bandit")
-    session.run("bandit", "-r", "m2r.py", "-ll", "-c", "bandit.yaml")
+    session.run("bandit", "-r", "m2r2.py", "-ll", "-c", "bandit.yaml")
 
 
 @nox.session(reuse_venv=True, python="3.7")

@@ -1,4 +1,4 @@
 [bump]
-input = m2r2.py
+input = setup.py
 minor = false
 patch = true

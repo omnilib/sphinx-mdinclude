@@ -15,7 +15,6 @@
 
 import sys
 import os
-from m2r2 import __version__ as __m2r2_version__
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -39,6 +38,8 @@ extensions = [
     'sphinx.ext.githubpages',
     'm2r2',
 ]
+
+from m2r2 import __version__ as __m2r2_version__
 
 suppress_warnings = ['image.nonlocal_uri']
 

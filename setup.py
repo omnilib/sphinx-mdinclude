@@ -4,8 +4,6 @@
 import sys
 from os import path
 
-from m2r2 import __version__
-
 try:
     from setuptools import setup
 except ImportError:
@@ -20,6 +18,8 @@ except ImportError:
     with open(readme_file) as f:
         readme = f.read()
 
+
+__version__ = "0.2.4"
 
 install_requires = ["mistune", "docutils"]
 test_requirements = ["pygments"]

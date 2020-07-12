@@ -14,6 +14,9 @@ from docutils import io, nodes, statemachine, utils
 from docutils.core import ErrorString
 from docutils.parsers import rst
 from docutils.utils import SafeString, column_width
+from pkg_resources import get_distribution
+
+__version__ = get_distribution("m2r2").version
 
 if sys.version_info < (3,):
     from codecs import open as _open
@@ -22,7 +25,7 @@ else:
     _open = open
     from urllib.parse import urlparse
 
-__version__ = "0.2.4"
+
 _is_sphinx = False
 prolog = """\
 .. role:: raw-html-m2r(raw)
