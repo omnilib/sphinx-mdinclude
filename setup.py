@@ -19,7 +19,7 @@ except ImportError:
         readme = f.read()
 
 
-__version__ = "0.2.4"
+__version__ = "0.2.5"
 
 install_requires = ["mistune", "docutils"]
 test_requirements = ["pygments"]
@@ -36,7 +36,7 @@ setup(
     author_email="miyako.dev@gmail.com",
     maintainer="CrossNox",
     maintainer_email="ijmermet+m2r2@gmail.com",
-    url="https://github.com/crossnox/m2r",
+    url="https://github.com/crossnox/m2r2",
     py_modules=["m2r2"],
     entry_points={"console_scripts": "m2r2 = m2r2:main"},
     include_package_data=True,
