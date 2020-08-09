@@ -54,10 +54,16 @@ Python 2.7 or Python 3.4+ is required.
 pip install m2r2
 ```
 
-Or,
+Or
 
 ```
 python3 -m pip install m2r2
+```
+
+or using `conda`
+
+```
+conda install -c conda-forge m2r2
 ```
 
 ## Usage
