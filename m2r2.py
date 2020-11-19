@@ -662,7 +662,7 @@ def setup(app):
     app.add_config_value("m2r_disable_inline_math", False, "env")
     try:
         app.add_source_parser(".md", M2RParser)  # for older sphinx versions
-    except TypeError:
+    except (TypeError, AttributeError):
         app.add_source_suffix(".md", "markdown")
         app.add_source_parser(M2RParser)
     app.add_directive("mdinclude", MdInclude)
