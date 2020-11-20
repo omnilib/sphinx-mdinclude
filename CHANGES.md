@@ -1,5 +1,12 @@
 ## Version 0.3.0
 
+### Version 0.2.7 (2020-11-20)
+* Add official python3.9 support
+* Fix classifiers
+
+### Version 0.2.6 (2020-11-19)
+* Fix error for Sphinx3.3.0
+
 ### Version 0.2.5 (2020-07-13)
 * Update repo name in every reference
 
