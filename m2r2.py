@@ -20,6 +20,7 @@ __version__ = get_distribution("m2r2").version
 
 if sys.version_info < (3,):
     from codecs import open as _open
+
     from urlparse import urlparse
 else:
     _open = open
@@ -110,7 +111,7 @@ class RestInlineGrammar(mistune.InlineGrammar):
     )
     rest_role = re.compile(r":.*?:`.*?`|`[^`]+`:.*?:")
     rest_link = re.compile(r"`[^`]*?`_")
-    inline_math = re.compile(r"`\$(.*)?\$`")
+    inline_math = re.compile(r"`\$(.*?)\$`")
     eol_literal_marker = re.compile(r"(\s+)?::\s*$")
     # add colon and space as special text
     text = re.compile(r"^[\s\S]+?(?=[\\<!\[:_*`~ ]|https?://| {2,}\n|$)")
@@ -503,7 +504,7 @@ class RestRenderer(mistune.Renderer):
 
     def inline_math(self, math):
         """Extension of recommonmark."""
-        return r"\ :math:`{}`\ ".format(math)
+        return r":math:`{}`".format(math)
 
     def eol_literal_marker(self, marker):
         """Extension of recommonmark."""
@@ -662,7 +663,7 @@ def setup(app):
     app.add_config_value("m2r_disable_inline_math", False, "env")
     try:
         app.add_source_parser(".md", M2RParser)  # for older sphinx versions
-    except TypeError:
+    except (TypeError, AttributeError):
         app.add_source_suffix(".md", "markdown")
         app.add_source_parser(M2RParser)
     app.add_directive("mdinclude", MdInclude)

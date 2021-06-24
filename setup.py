@@ -19,7 +19,7 @@ except ImportError:
         readme = f.read()
 
 
-__version__ = "0.2.5"
+__version__ = "0.2.8"
 
 install_requires = ["mistune", "docutils"]
 test_requirements = ["pygments"]
@@ -55,6 +55,9 @@ setup(
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Topic :: Text Processing",
     ],
     install_requires=install_requires,
