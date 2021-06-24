@@ -20,6 +20,7 @@ __version__ = get_distribution("m2r2").version
 
 if sys.version_info < (3,):
     from codecs import open as _open
+
     from urlparse import urlparse
 else:
     _open = open
@@ -503,7 +504,7 @@ class RestRenderer(mistune.Renderer):
 
     def inline_math(self, math):
         """Extension of recommonmark."""
-        return r"\ :math:`{}`\ ".format(math)
+        return r":math:`{}`".format(math)
 
     def eol_literal_marker(self, marker):
         """Extension of recommonmark."""
