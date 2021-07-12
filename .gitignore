@@ -79,7 +79,6 @@ target/
 ### project specific ignore files
 wiki
 tmp
-.bumpversion.cfg
 pytest.xml
 chromedriver
 

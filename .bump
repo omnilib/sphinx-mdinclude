@@ -1,4 +1,0 @@
-[bump]
-input = setup.py
-minor = false
-patch = true
