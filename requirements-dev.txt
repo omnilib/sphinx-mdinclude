@@ -1,6 +1,6 @@
 -r requirements-test.txt
 black==19.10b0
-bump==1.1.1
+bump2version==1.0.1
 flake8==3.7.8
 isort==4.3.21
 livereload
