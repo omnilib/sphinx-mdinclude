@@ -666,7 +666,9 @@ def setup(app):
     app.add_config_value("m2r_parse_relative_links", False, "env")
     app.add_config_value("m2r_anonymous_references", False, "env")
     app.add_config_value("m2r_disable_inline_math", False, "env")
-    app.add_config_value("m2r_use_mermaid", "sphinxcontrib.mermaid" in app.config.extensions, "env")
+    app.add_config_value(
+        "m2r_use_mermaid", "sphinxcontrib.mermaid" in app.config.extensions, "env"
+    )
     try:
         app.add_source_parser(".md", M2RParser)  # for older sphinx versions
     except (TypeError, AttributeError):

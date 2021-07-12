@@ -44,6 +44,7 @@ a code block in HTML like `see <code>ref</code>_`, which is not expected.
     * ``mdinclude`` directive to include markdown from md or rst files
     * option to parse relative links into ref and doc directives (``m2r_parse_relative_links``)
     * option to render ``mermaid`` blocks as graphs with [sphinxcontrib.mermaid](https://sphinxcontrib-mermaid-demo.readthedocs.io/en/latest/index.html`) (``m2r_use_mermaid``, default: auto)
+      * auto means that m2r2 will check if `sphinxcontrib.mermaid` has been added to the extensions list
 * Pure python implementation
     * pandoc is not required
 
