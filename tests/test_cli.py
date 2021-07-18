@@ -9,7 +9,7 @@ from os import path
 from copy import copy
 from unittest import TestCase
 import subprocess
-
+import six
 from m2r2 import parse_from_file, main, options
 
 if sys.version_info < (3,):
@@ -58,7 +58,7 @@ class TestConvert(TestCase):
         self.assertIn('underscore-emphasis', message)
         self.assertIn('anonymous-references', message)
         self.assertIn('inline-math', message)
-        self.assertIn('optional arguments:', message)
+        six.assertRegex(self, message, r"option(s|al arguments):")
 
     def test_parse_file(self):
         output = parse_from_file(test_md)
