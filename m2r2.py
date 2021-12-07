@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function, unicode_literals
+"""
+Markdown extension for Sphinx
+"""
+
+__author__ = "Hiroyuki Takagi <miyako.dev@gmail.com>"
+__version__ = "0.3.1"
 
 import os
 import os.path
@@ -14,17 +19,9 @@ from docutils import io, nodes, statemachine, utils
 from docutils.core import ErrorString
 from docutils.parsers import rst
 from docutils.utils import SafeString, column_width
-from pkg_resources import get_distribution
+from urllib.parse import urlparse
 
-__version__ = get_distribution("m2r2").version
 
-if sys.version_info < (3,):
-    from codecs import open as _open
-
-    from urlparse import urlparse
-else:
-    _open = open
-    from urllib.parse import urlparse
 
 
 _is_sphinx = False
@@ -688,7 +685,7 @@ def convert(text, **kwargs):
 def parse_from_file(file, encoding="utf-8", **kwargs):
     if not os.path.exists(file):
         raise OSError("No such file exists: {}".format(file))
-    with _open(file, encoding=encoding) as f:
+    with open(file, encoding=encoding) as f:
         src = f.read()
     output = convert(src, **kwargs)
     return output
@@ -701,7 +698,7 @@ def save_to_file(file, src, encoding="utf-8", **kwargs):
         if confirm.upper() not in ("Y", "YES"):
             print("skip {}".format(file))
             return
-    with _open(target, "w", encoding=encoding) as f:
+    with open(target, "w", encoding=encoding) as f:
         f.write(src)
 
 

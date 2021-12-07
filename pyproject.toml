@@ -1,0 +1,38 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "m2r2"
+authors = [
+    {name = "Hiroyuki Takagi", email = "miyako.dev@gmail.com"},
+]
+maintainers = [
+    {name = "CrossNox", email = "ijmermet+m2r2@gmail.com"},
+    {name = "John Reese", email = "john@noswap.com"},
+]
+readme = "README.md"
+requires-python = ">=3.6"
+dependencies = [
+    "mistune >=0.8,<1.0",
+    "docutils >=0.18,<1.0",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Framework :: Sphinx :: Extension",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Text Processing",
+]
+keywords = ["Markdown", "reStructuredText", "sphinx-extension"]
+dynamic = ["version", "description"]
+
+[project.urls]
+Github = "https://github.com/jreese/m2r2"
+
