@@ -11,17 +11,14 @@ from .__version__ import __version__
 import os
 import os.path
 import re
-import sys
 from argparse import ArgumentParser, Namespace
+from urllib.parse import urlparse
 
 import mistune
 from docutils import io, nodes, statemachine, utils
 from docutils.core import ErrorString
 from docutils.parsers import rst
 from docutils.utils import SafeString, column_width
-from urllib.parse import urlparse
-
-
 
 
 _is_sphinx = False
@@ -78,9 +75,18 @@ def parse_options():
 
 
 class RestBlockGrammar(mistune.BlockGrammar):
-    directive = re.compile(r"^( *\.\..*?)\n(?=\S)", re.DOTALL | re.MULTILINE,)
-    oneline_directive = re.compile(r"^( *\.\..*?)$", re.DOTALL | re.MULTILINE,)
-    rest_code_block = re.compile(r"^::\s*$", re.DOTALL | re.MULTILINE,)
+    directive = re.compile(
+        r"^( *\.\..*?)\n(?=\S)",
+        re.DOTALL | re.MULTILINE,
+    )
+    oneline_directive = re.compile(
+        r"^( *\.\..*?)$",
+        re.DOTALL | re.MULTILINE,
+    )
+    rest_code_block = re.compile(
+        r"^::\s*$",
+        re.DOTALL | re.MULTILINE,
+    )
 
 
 class RestBlockLexer(mistune.BlockLexer):
@@ -673,7 +679,9 @@ def setup(app):
         app.add_source_parser(M2RParser)
     app.add_directive("mdinclude", MdInclude)
     metadata = dict(
-        version=__version__, parallel_read_safe=True, parallel_write_safe=True,
+        version=__version__,
+        parallel_read_safe=True,
+        parallel_write_safe=True,
     )
     return metadata
 
