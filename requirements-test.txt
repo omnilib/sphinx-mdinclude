@@ -1,5 +1,0 @@
-mock; python_version < '3.3'
-pytest
-pytest-cov
-six
-sphinx
