@@ -16,8 +16,6 @@
 import sys
 import os
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -36,10 +34,10 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
-    'm2r2',
+    'sphinx_mdinclude',
 ]
 
-from m2r2 import __version__ as __m2r2_version__
+from sphinx_mdinclude import __version__ as __m2r2_version__
 
 suppress_warnings = ['image.nonlocal_uri']
 
@@ -62,8 +60,8 @@ m2r_disable_inline_math = False
 master_doc = 'index'
 
 # General information about the project.
-project = 'M2R2'
-copyright = '2016, Hiroyuki Takagi'
+project = 'sphinx-mdinclude'
+copyright = '2016, Hiroyuki Takagi, CrossNox, John Reese'
 author = 'Hiroyuki Takagi'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -132,15 +130,11 @@ html_theme = 'alabaster'
 # documentation.
 html_theme_options = {
     'description': 'Markdown mixed to reST',
-    'github_user': 'CrossNox',
-    'github_repo': 'm2r2',
+    'github_user': 'jreese',
+    'github_repo': 'sphinx-mdinclude',
     'github_banner': True,
     'github_type': 'mark',
     'github_count': False,
-    'font_family': '"Charis SIL", "Noto Serif", serif',
-    'head_font_family': 'Lato, sans-serif',
-    'code_font_family': '"Code new roman", "Ubuntu Mono", monospace',
-    'code_font_size': '1rem',
 }
 
 # Add any paths that contain custom themes here, relative to this directory.

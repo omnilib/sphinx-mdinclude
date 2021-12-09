@@ -29,7 +29,7 @@ test:
 	python -m coverage report
 	python -m mypy --install-types --non-interactive -p $(SRCS)
 
-html: .venv README.rst docs/*.rst docs/conf.py
+html: .venv README.md docs/*.md docs/conf.py
 	source .venv/bin/activate && sphinx-build -b html docs html
 
 clean:
