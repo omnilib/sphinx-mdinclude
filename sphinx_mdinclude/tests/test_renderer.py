@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function, unicode_literals
-
 from unittest import TestCase, skip
 
 from docutils import io
 from docutils.core import Publisher
-from m2r2 import prolog, convert
+
+from .. import prolog, convert
 
 
 class RendererTestBase(TestCase):

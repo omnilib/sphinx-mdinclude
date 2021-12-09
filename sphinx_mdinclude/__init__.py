@@ -6,8 +6,6 @@ Markdown extension for Sphinx
 """
 
 __author__ = "Hiroyuki Takagi <miyako.dev@gmail.com>"
-from .__version__ import __version__
-
 import os
 import os.path
 import re
@@ -20,58 +18,14 @@ from docutils.core import ErrorString
 from docutils.parsers import rst
 from docutils.utils import SafeString, column_width
 
+from .__version__ import __version__
 
-_is_sphinx = False
+
 prolog = """\
 .. role:: raw-html-m2r(raw)
    :format: html
 
 """
-
-# for command-line use
-parser = ArgumentParser()
-options = Namespace()
-parser.add_argument("input_file", nargs="*", help="files to convert to reST format")
-parser.add_argument(
-    "--overwrite",
-    action="store_true",
-    default=False,
-    help="overwrite output file without confirmaion",
-)
-parser.add_argument(
-    "--dry-run",
-    action="store_true",
-    default=False,
-    help="print conversion result and not save output file",
-)
-parser.add_argument(
-    "--no-underscore-emphasis",
-    action="store_true",
-    default=False,
-    help="do not use underscore (_) for emphasis",
-)
-parser.add_argument(
-    "--parse-relative-links",
-    action="store_true",
-    default=False,
-    help="parse relative links into ref or doc directives",
-)
-parser.add_argument(
-    "--anonymous-references",
-    action="store_true",
-    default=False,
-    help="use anonymous references in generated rst",
-)
-parser.add_argument(
-    "--disable-inline-math",
-    action="store_true",
-    default=False,
-    help="disable parsing inline math",
-)
-
-
-def parse_options():
-    parser.parse_known_args(namespace=options)
 
 
 class RestBlockGrammar(mistune.BlockGrammar):
@@ -147,12 +101,10 @@ class RestInlineLexer(mistune.InlineLexer):
         no_underscore_emphasis = kwargs.pop("no_underscore_emphasis", False)
         disable_inline_math = kwargs.pop("disable_inline_math", False)
         super(RestInlineLexer, self).__init__(*args, **kwargs)
-        if not _is_sphinx:
-            parse_options()
-        if no_underscore_emphasis or getattr(options, "no_underscore_emphasis", False):
+        if no_underscore_emphasis:
             self.rules.no_underscore_emphasis()
         inline_maths = "inline_math" in self.default_rules
-        if disable_inline_math or getattr(options, "disable_inline_math", False):
+        if disable_inline_math:
             if inline_maths:
                 self.default_rules.remove("inline_math")
         elif not inline_maths:
@@ -211,12 +163,6 @@ class RestRenderer(mistune.Renderer):
         self.anonymous_references = kwargs.pop("anonymous_references", False)
         self.use_mermaid = kwargs.pop("use_mermaid", False)
         super(RestRenderer, self).__init__(*args, **kwargs)
-        if not _is_sphinx:
-            parse_options()
-            if getattr(options, "parse_relative_links", False):
-                self.parse_relative_links = options.parse_relative_links
-            if getattr(options, "anonymous_references", False):
-                self.anonymous_references = options.anonymous_references
 
     def _indent_block(self, block):
         return "\n".join(
@@ -234,9 +180,8 @@ class RestRenderer(mistune.Renderer):
             first_line = "\n.. mermaid::\n\n"
         elif lang:
             first_line = "\n.. code-block:: {}\n\n".format(lang)
-        elif _is_sphinx:
-            first_line = "\n::\n\n"
         else:
+            # first_line = "\n::\n\n"
             first_line = "\n.. code-block::\n\n"
         return first_line + self._indent_block(code) + "\n"
 
@@ -661,10 +606,12 @@ class MdInclude(rst.Directive):
         return []
 
 
+def convert(text, **kwargs):
+    return M2R(**kwargs)(text)
+
+
 def setup(app):
     """When used for sphinx extension."""
-    global _is_sphinx
-    _is_sphinx = True
     app.add_config_value("no_underscore_emphasis", False, "env")
     app.add_config_value("m2r_parse_relative_links", False, "env")
     app.add_config_value("m2r_anonymous_references", False, "env")
@@ -684,44 +631,3 @@ def setup(app):
         parallel_write_safe=True,
     )
     return metadata
-
-
-def convert(text, **kwargs):
-    return M2R(**kwargs)(text)
-
-
-def parse_from_file(file, encoding="utf-8", **kwargs):
-    if not os.path.exists(file):
-        raise OSError("No such file exists: {}".format(file))
-    with open(file, encoding=encoding) as f:
-        src = f.read()
-    output = convert(src, **kwargs)
-    return output
-
-
-def save_to_file(file, src, encoding="utf-8", **kwargs):
-    target = os.path.splitext(file)[0] + ".rst"
-    if not options.overwrite and os.path.exists(target):
-        confirm = input("{} already exists. overwrite it? [y/n]: ".format(target))
-        if confirm.upper() not in ("Y", "YES"):
-            print("skip {}".format(file))
-            return
-    with open(target, "w", encoding=encoding) as f:
-        f.write(src)
-
-
-def main():
-    parse_options()  # parse cli options
-    if not options.input_file:
-        parser.print_help()
-        parser.exit(0)
-    for file in options.input_file:
-        output = parse_from_file(file)
-        if options.dry_run:
-            print(output)
-        else:
-            save_to_file(file, output)
-
-
-if __name__ == "__main__":
-    main()

@@ -43,3 +43,19 @@ name = "sphinx-mdinclude"
 package = "sphinx_mdinclude"
 signed_tags = true
 version_file = true
+
+[tool.coverage.run]
+branch = true
+include = ["sphinx_mdinclude/*"]
+omit = ["sphinx_mdinclude/tests/*"]
+
+[tool.coverage.report]
+fail_under = 50
+precision = 1
+show_missing = true
+skip_covered = true
+
+[tool.mypy]
+python_version = "3.6"
+# strict = true
+ignore_missing_imports = true
