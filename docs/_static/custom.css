@@ -1,13 +1,20 @@
-div.sphinxsidebarwrapper p.blurb {
-  font-family: Lato, sans-serif;
+div.omnilib {
+    margin-top: 24px;
 }
 
-h1.logo {
-  font-family: Lato, sans-serif;
-  font-weight: normal;
+div.omnilib-badges {
+    margin-top: 12px;
+    margin-bottom: 10px;
 }
 
-div.sphinxsidebar li.toctree-l1 {
-  font-family: Lato, sans-serif;
+div.omnilib-badges a {
+    color: #bbb;
+    text-decoration: none;
+    font-size: 24px;
+    border: none;
 }
 
+div.omnilib-badges a:hover {
+    color: #777;
+    border: none;
+}
