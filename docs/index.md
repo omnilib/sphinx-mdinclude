@@ -3,6 +3,6 @@
     :hidden:
 
     example
-    changes
+    changelog
 
 .. mdinclude:: ../README.md
