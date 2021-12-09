@@ -37,3 +37,9 @@ dynamic = ["version", "description"]
 [project.urls]
 Github = "https://github.com/jreese/m2r2"
 
+
+[tool.attribution]
+name = "sphinx-mdinclude"
+package = "sphinx_mdinclude"
+signed_tags = true
+version_file = true

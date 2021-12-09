@@ -6,7 +6,7 @@ Markdown extension for Sphinx
 """
 
 __author__ = "Hiroyuki Takagi <miyako.dev@gmail.com>"
-__version__ = "0.3.1"
+from .__version__ import __version__
 
 import os
 import os.path
