@@ -1,6 +1,30 @@
 sphinx-mdinclude
 ================
 
+v0.4.0b1
+--------
+
+Beta release
+
+* Forked project from m2r2
+* Renamed package to `sphinx-mdinclude`
+* Removes CLI to focus on Sphinx extension
+* Overhauled documentation with less boilerplate
+* Move tests into `sphinx_mdinclude` namespace
+* Pin dependencies to mistune<1.0 and docutils<0.18
+* Build using flit instead of setuptools
+* Formatted with latest black and µsort
+
+```
+$ git shortlog -s v0.2.7...v0.4.0b1
+    10	CrossNox
+     1	Ezequiel Rosas
+    18	John Reese
+     1	illes
+     1	kalvdans
+```
+
+
 v0.3.1
 ------
 
