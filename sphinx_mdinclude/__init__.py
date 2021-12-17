@@ -16,7 +16,7 @@ import mistune
 from docutils import io, nodes, statemachine, utils
 from docutils.core import ErrorString
 from docutils.parsers import rst
-from docutils.utils import SafeString, column_width
+from docutils.utils import column_width, SafeString
 
 from .__version__ import __version__
 

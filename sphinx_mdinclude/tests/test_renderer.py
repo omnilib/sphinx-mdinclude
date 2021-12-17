@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from unittest import TestCase, skip
+from unittest import skip, TestCase
 
 from docutils import io
 from docutils.core import Publisher
 
-from .. import prolog, convert
+from .. import convert, prolog
 
 
 class RendererTestBase(TestCase):
