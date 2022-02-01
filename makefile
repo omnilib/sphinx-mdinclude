@@ -11,6 +11,7 @@ dev:
 	flit install --symlink
 
 setup:
+	python -m pip install -U pip
 	python -m pip install -Ur requirements-dev.txt
 	python -m pip install -Ur requirements.txt
 
