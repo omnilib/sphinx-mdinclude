@@ -15,7 +15,7 @@ maintainers = [
 readme = "README.md"
 requires-python = ">=3.6"
 dependencies = [
-    "mistune >=0.8,<1.0",
+    "mistune",
     "docutils >=0.15,<1.0",
 ]
 classifiers = [
