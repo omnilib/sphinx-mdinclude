@@ -6,7 +6,7 @@ from unittest import skip, TestCase
 from docutils import io
 from docutils.core import Publisher
 
-from .. import convert, prolog
+from ..legacy import convert, PROLOG
 
 
 class RendererTestBase(TestCase):
@@ -87,7 +87,7 @@ class TestBasic(RendererTestBase):
         out = self.conv(src)
         self.assertEqual(
             out,
-            prolog + "\nabc def\\ :raw-html-md:`<br>`\nghi" + "\n",
+            PROLOG + "\nabc def\\ :raw-html-md:`<br>`\nghi" + "\n",
         )
 
 
@@ -288,7 +288,7 @@ class TestInlineMarkdown(RendererTestBase):
     def test_inline_html(self):
         src = "this is <s>html</s>."
         out = self.conv(src)
-        self.assertEqual(out, prolog + "\nthis is :raw-html-md:`<s>html</s>`.\n")
+        self.assertEqual(out, PROLOG + "\nthis is :raw-html-md:`<s>html</s>`.\n")
 
     def test_block_html(self):
         src = "<h1>title</h1>"
