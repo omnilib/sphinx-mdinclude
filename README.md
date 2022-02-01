@@ -32,7 +32,7 @@ sphinx-mdinclude is a fork of [m2r](https://github.com/miyakogi/m2r) and
 * Sphinx extension
     * add markdown support for sphinx
     * ``mdinclude`` directive to include markdown from md or rst files
-    * option to parse relative links into ref and doc directives (``m2r_parse_relative_links``)
+    * option to parse relative links into ref and doc directives (``md_parse_relative_links``)
 
 ## Restrictions
 

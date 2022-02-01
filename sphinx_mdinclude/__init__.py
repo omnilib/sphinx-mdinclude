@@ -22,7 +22,7 @@ from .__version__ import __version__
 
 
 prolog = """\
-.. role:: raw-html-m2r(raw)
+.. role:: raw-html-md(raw)
    :format: html
 
 """
@@ -170,7 +170,7 @@ class RestRenderer(mistune.Renderer):
 
     def _raw_html(self, html):
         self._include_raw_html = True
-        return r"\ :raw-html-m2r:`{}`\ ".format(html)
+        return r"\ :raw-html-md:`{}`\ ".format(html)
 
     def block_code(self, code, lang=None):
         if lang == "math":
@@ -465,16 +465,16 @@ class RestRenderer(mistune.Renderer):
         return "\n\n"
 
 
-class M2R(mistune.Markdown):
+class Converter(mistune.Markdown):
     def __init__(
         self, renderer=None, inline=RestInlineLexer, block=RestBlockLexer, **kwargs
     ):
         if renderer is None:
             renderer = RestRenderer(**kwargs)
-        super(M2R, self).__init__(renderer, inline=inline, block=block, **kwargs)
+        super().__init__(renderer, inline=inline, block=block, **kwargs)
 
     def parse(self, text):
-        output = super(M2R, self).parse(text)
+        output = super().parse(text)
         return self.post_process(output)
 
     def output_directive(self):
@@ -497,7 +497,7 @@ class M2R(mistune.Markdown):
             return output
 
 
-class M2RParser(rst.Parser, object):
+class MdIncludeParser(rst.Parser, object):
     # Explicitly tell supported formats to sphinx
     supported = ("markdown", "md", "mkd")
 
@@ -507,13 +507,13 @@ class M2RParser(rst.Parser, object):
         else:
             inputstring = inputstrings
         config = document.settings.env.config
-        converter = M2R(
+        converter = Converter(
             no_underscore_emphasis=config.no_underscore_emphasis,
-            parse_relative_links=config.m2r_parse_relative_links,
-            anonymous_references=config.m2r_anonymous_references,
-            disable_inline_math=config.m2r_disable_inline_math,
+            parse_relative_links=config.md_parse_relative_links,
+            anonymous_references=config.md_anonymous_references,
+            disable_inline_math=config.md_disable_inline_math,
         )
-        super(M2RParser, self).parse(converter(inputstring), document)
+        super().parse(converter(inputstring), document)
 
 
 class MdInclude(rst.Directive):
@@ -588,11 +588,11 @@ class MdInclude(rst.Directive):
             )
 
         config = self.state.document.settings.env.config
-        converter = M2R(
+        converter = Converter(
             no_underscore_emphasis=config.no_underscore_emphasis,
-            parse_relative_links=config.m2r_parse_relative_links,
-            anonymous_references=config.m2r_anonymous_references,
-            disable_inline_math=config.m2r_disable_inline_math,
+            parse_relative_links=config.md_parse_relative_links,
+            anonymous_references=config.md_anonymous_references,
+            disable_inline_math=config.md_disable_inline_math,
         )
         include_lines = statemachine.string2lines(
             converter(rawtext), tab_width, convert_whitespace=True
@@ -602,20 +602,17 @@ class MdInclude(rst.Directive):
 
 
 def convert(text, **kwargs):
-    return M2R(**kwargs)(text)
+    return Converter(**kwargs)(text)
 
 
 def setup(app):
     """When used for sphinx extension."""
     app.add_config_value("no_underscore_emphasis", False, "env")
-    app.add_config_value("m2r_parse_relative_links", False, "env")
-    app.add_config_value("m2r_anonymous_references", False, "env")
-    app.add_config_value("m2r_disable_inline_math", False, "env")
-    try:
-        app.add_source_parser(".md", M2RParser)  # for older sphinx versions
-    except (TypeError, AttributeError):
-        app.add_source_suffix(".md", "markdown")
-        app.add_source_parser(M2RParser)
+    app.add_config_value("md_parse_relative_links", False, "env")
+    app.add_config_value("md_anonymous_references", False, "env")
+    app.add_config_value("md_disable_inline_math", False, "env")
+    app.add_source_suffix(".md", "markdown")
+    app.add_source_parser(MdIncludeParser)
     app.add_directive("mdinclude", MdInclude)
     metadata = dict(
         version=__version__,

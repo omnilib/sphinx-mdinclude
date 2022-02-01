@@ -87,7 +87,7 @@ class TestBasic(RendererTestBase):
         out = self.conv(src)
         self.assertEqual(
             out,
-            prolog + "\nabc def\\ :raw-html-m2r:`<br>`\nghi" + "\n",
+            prolog + "\nabc def\\ :raw-html-md:`<br>`\nghi" + "\n",
         )
 
 
@@ -102,9 +102,9 @@ class TestInlineMarkdown(RendererTestBase):
         out = self.conv(src)
         self.assertEqual(
             out.strip(),
-            ".. role:: raw-html-m2r(raw)\n"
+            ".. role:: raw-html-md(raw)\n"
             "   :format: html\n\n\n"
-            ':raw-html-m2r:`<code class="docutils literal">'
+            ':raw-html-md:`<code class="docutils literal">'
             '<span class="pre">a&#96;&#96;a</span></code>`',
         )
 
@@ -189,9 +189,9 @@ class TestInlineMarkdown(RendererTestBase):
         out = self.conv(src)
         self.assertEqual(
             out,
-            ".. role:: raw-html-m2r(raw)\n"
+            ".. role:: raw-html-md(raw)\n"
             "   :format: html\n\n\n"
-            "this is a :raw-html-m2r:"
+            "this is a :raw-html-md:"
             '`<a href="http://example.com/" title="example">link</a>`.\n',
         )
 
@@ -288,7 +288,7 @@ class TestInlineMarkdown(RendererTestBase):
     def test_inline_html(self):
         src = "this is <s>html</s>."
         out = self.conv(src)
-        self.assertEqual(out, prolog + "\nthis is :raw-html-m2r:`<s>html</s>`.\n")
+        self.assertEqual(out, prolog + "\nthis is :raw-html-md:`<s>html</s>`.\n")
 
     def test_block_html(self):
         src = "<h1>title</h1>"
