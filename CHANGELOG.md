@@ -1,6 +1,28 @@
 sphinx-mdinclude
 ================
 
+v0.4.0
+------
+
+Feature release
+
+- Forked project from m2r2
+- Renamed package to `sphinx-mdinclude`
+- Removes CLI to focus on Sphinx extension
+- Remove mermaid extension support
+- Overhauled documentation with less boilerplate
+- Move tests into `sphinx_mdinclude` namespace
+- Pin dependencies to mistune<1.0 and docutils<0.18
+- Build using flit instead of setuptools
+- Formatted with latest black and µsort
+
+```
+$ git shortlog -s v0.4.0b1...v0.4.0
+     4	John Reese
+     1	dependabot[bot]
+```
+
+
 v0.4.0b1
 --------
 
@@ -336,5 +358,4 @@ First public release.
 $ git shortlog -s v0.1
     40	miyakogi
 ```
-
 
