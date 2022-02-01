@@ -35,7 +35,7 @@ keywords = ["Markdown", "reStructuredText", "sphinx-extension"]
 dynamic = ["version", "description"]
 
 [project.urls]
-Github = "https://github.com/jreese/m2r2"
+Github = "https://github.com/jreese/sphinx-mdinclude"
 
 
 [tool.attribution]
