@@ -14,10 +14,8 @@ This first math `$x^2$` in this line will render. This one `$z^3$` should as wel
 
 Also within parentheses (`$x^2$`) and (`$z^3$`).
 
-```mermaid
-graph TD;
-    A-->B;
-    A-->C;
-    B-->D;
-    C-->D;
+```python
+class Foo:
+    def bar(self, arg: str = "") -> int:
+        return len(arg)
 ```

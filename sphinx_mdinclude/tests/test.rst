@@ -18,10 +18,8 @@ This first math :math:`x^2` in this line will render. This one :math:`z^3` shoul
 
 Also within parentheses (:math:`x^2`) and (:math:`z^3`).
 
-.. code-block:: mermaid
+.. code-block:: python
 
-   graph TD;
-       A-->B;
-       A-->C;
-       B-->D;
-       C-->D;
+    class Foo:
+        def bar(self, arg: str = "") -> int:
+            return len(arg)
