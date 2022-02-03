@@ -1,9 +1,13 @@
 import os
 import re
+
+import warnings
 from urllib.parse import urlparse
 
 import mistune
 from docutils.utils import column_width
+
+warnings.warn("This module only works with mistune==0.8.4", DeprecationWarning)
 
 PROLOG = """\
 .. role:: raw-html-md(raw)
@@ -449,7 +453,7 @@ class RestRenderer(mistune.Renderer):
         return "\n\n"
 
 
-class Converter(mistune.Markdown):
+class RestMarkdown(mistune.Markdown):
     def __init__(
         self, renderer=None, inline=RestInlineLexer, block=RestBlockLexer, **kwargs
     ):
@@ -482,4 +486,4 @@ class Converter(mistune.Markdown):
 
 
 def convert(text, **kwargs):
-    return Converter(**kwargs)(text)
+    return RestMarkdown(**kwargs)(text)

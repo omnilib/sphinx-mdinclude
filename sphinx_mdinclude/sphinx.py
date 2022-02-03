@@ -10,8 +10,9 @@ from docutils.core import ErrorString
 from docutils.parsers import rst
 from docutils.utils import SafeString
 
+from . import RestMarkdown
+
 from .__version__ import __version__
-from .legacy import Converter
 
 
 class MdIncludeParser(rst.Parser, object):
@@ -24,7 +25,7 @@ class MdIncludeParser(rst.Parser, object):
         else:
             inputstring = inputstrings
         config = document.settings.env.config
-        converter = Converter(
+        converter = RestMarkdown(
             no_underscore_emphasis=config.no_underscore_emphasis,
             parse_relative_links=config.md_parse_relative_links,
             anonymous_references=config.md_anonymous_references,
@@ -105,7 +106,7 @@ class MdInclude(rst.Directive):
             )
 
         config = self.state.document.settings.env.config
-        converter = Converter(
+        converter = RestMarkdown(
             no_underscore_emphasis=config.no_underscore_emphasis,
             parse_relative_links=config.md_parse_relative_links,
             anonymous_references=config.md_anonymous_references,
