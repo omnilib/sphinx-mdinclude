@@ -77,3 +77,4 @@ to my code is from me and not from my employer. See the [LICENSE][] file for det
 
 [John Reese]: https://jreese.sh
 [LICENSE]: https://github.com/jreese/sphinx-mdinclude/blob/main/LICENSE
+
