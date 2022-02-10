@@ -1,6 +1,20 @@
 sphinx-mdinclude
 ================
 
+v0.5.0
+------
+
+Feature release
+
+- Support for mistune 2.0 with major refactoring of codebase
+- Removal of sphinx configuration options with better defaults
+
+```
+$ git shortlog -s v0.5.0b1...v0.5.0
+     3	John Reese
+```
+
+
 v0.5.0b1
 --------
 
