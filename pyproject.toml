@@ -15,7 +15,7 @@ maintainers = [
 readme = "README.md"
 requires-python = ">=3.6"
 dependencies = [
-    "mistune >=0.8,<1.0",
+    "mistune >= 2.0",
     "docutils >=0.15,<1.0",
 ]
 classifiers = [
@@ -35,7 +35,7 @@ keywords = ["Markdown", "reStructuredText", "sphinx-extension"]
 dynamic = ["version", "description"]
 
 [project.urls]
-Github = "https://github.com/jreese/m2r2"
+Github = "https://github.com/jreese/sphinx-mdinclude"
 
 
 [tool.attribution]

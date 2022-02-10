@@ -6,7 +6,7 @@ from unittest import skip, TestCase
 from docutils import io
 from docutils.core import Publisher
 
-from .. import convert, prolog
+from ..render import convert, PROLOG
 
 
 class RendererTestBase(TestCase):
@@ -87,7 +87,7 @@ class TestBasic(RendererTestBase):
         out = self.conv(src)
         self.assertEqual(
             out,
-            prolog + "\nabc def\\ :raw-html-m2r:`<br>`\nghi" + "\n",
+            PROLOG + "\nabc def :raw-html-md:`<br />`\nghi" + "\n",
         )
 
 
@@ -102,9 +102,9 @@ class TestInlineMarkdown(RendererTestBase):
         out = self.conv(src)
         self.assertEqual(
             out.strip(),
-            ".. role:: raw-html-m2r(raw)\n"
+            ".. role:: raw-html-md(raw)\n"
             "   :format: html\n\n\n"
-            ':raw-html-m2r:`<code class="docutils literal">'
+            ':raw-html-md:`<code class="docutils literal">'
             '<span class="pre">a&#96;&#96;a</span></code>`',
         )
 
@@ -122,11 +122,6 @@ class TestInlineMarkdown(RendererTestBase):
         out = self.conv(src)
         self.assertEqual(out.replace("\n", ""), "*a*")
 
-    def test_emphasis_no_(self):
-        src = "_a_"
-        out = self.conv(src, no_underscore_emphasis=True)
-        self.assertEqual(out.replace("\n", ""), "_a_")
-
     def test_double_emphasis(self):
         src = "**a**"
         out = self.conv(src)
@@ -136,11 +131,6 @@ class TestInlineMarkdown(RendererTestBase):
         src = "__a__"
         out = self.conv(src)
         self.assertEqual(out.replace("\n", ""), "**a**")
-
-    def test_emphasis_no__(self):
-        src = "__a__"
-        out = self.conv(src, no_underscore_emphasis=True)
-        self.assertEqual(out.replace("\n", ""), "__a__")
 
     def test_autolink(self):
         src = "link to http://example.com/ in sentence."
@@ -152,46 +142,19 @@ class TestInlineMarkdown(RendererTestBase):
         out = self.conv(src)
         self.assertEqual(out, "\nthis is a `link <http://example.com/>`_.\n")
 
-    def test_anonymous_link(self):
-        src = "this is a [link](http://example.com/)."
-        out = self.conv(src, anonymous_references=True)
-        self.assertEqual(out, "\nthis is a `link <http://example.com/>`__.\n")
-
-    def test_link_with_rel_link_enabled(self):
-        src = "this is a [link](http://example.com/)."
-        out = self.conv_no_check(src, parse_relative_links=True)
-        self.assertEqual(out, "\nthis is a `link <http://example.com/>`_.\n")
-
-    def test_anonymous_link_with_rel_link_enabled(self):
-        src = "this is a [link](http://example.com/)."
-        out = self.conv_no_check(
-            src, parse_relative_links=True, anonymous_references=True
-        )
-        self.assertEqual(out, "\nthis is a `link <http://example.com/>`__.\n")
-
     def test_anchor(self):
-        src = "this is an [anchor](#anchor)."
-        out = self.conv_no_check(src, parse_relative_links=True)
-        self.assertEqual(out, "\nthis is an :ref:`anchor <anchor>`.\n")
-
-    def test_relative_link(self):
-        src = "this is a [relative link](a_file.md)."
-        out = self.conv_no_check(src, parse_relative_links=True)
-        self.assertEqual(out, "\nthis is a :doc:`relative link <a_file>`.\n")
-
-    def test_relative_link_with_anchor(self):
-        src = "this is a [relative link](a_file.md#anchor)."
-        out = self.conv_no_check(src, parse_relative_links=True)
-        self.assertEqual(out, "\nthis is a :doc:`relative link <a_file>`.\n")
+        src = "this is an [anchor link](#anchor)."
+        out = self.conv_no_check(src)
+        self.assertEqual(out, "\nthis is an :ref:`anchor link <anchor>`.\n")
 
     def test_link_title(self):
         src = 'this is a [link](http://example.com/ "example").'
         out = self.conv(src)
         self.assertEqual(
             out,
-            ".. role:: raw-html-m2r(raw)\n"
+            ".. role:: raw-html-md(raw)\n"
             "   :format: html\n\n\n"
-            "this is a :raw-html-m2r:"
+            "this is a :raw-html-md:"
             '`<a href="http://example.com/" title="example">link</a>`.\n',
         )
 
@@ -234,7 +197,7 @@ class TestInlineMarkdown(RendererTestBase):
         out = self.conv(src)
         self.assertEqual(
             out,
-            "\na co:\\ ``de`` and `RefLink <http://example.com>`_ here.\n",
+            "\na co:``de`` and `RefLink <http://example.com>`_ here.\n",
         )
 
     def test_rest_role_incomplete2(self):
@@ -242,7 +205,7 @@ class TestInlineMarkdown(RendererTestBase):
         out = self.conv(src)
         self.assertEqual(
             out,
-            "\na `RefLink <http://example.com>`_ and co:\\ ``de`` here.\n",
+            "\na `RefLink <http://example.com>`_ and co:``de`` here.\n",
         )
 
     def test_rest_role_with_code(self):
@@ -280,15 +243,10 @@ class TestInlineMarkdown(RendererTestBase):
         out = self.conv(src)
         self.assertEqual(out, "\nthis is :math:`E = mc^2` inline math.\n")
 
-    def test_disable_inline_math(self):
-        src = "this is `$E = mc^2$` inline math."
-        out = self.conv(src, disable_inline_math=True)
-        self.assertEqual(out, "\nthis is ``$E = mc^2$`` inline math.\n")
-
     def test_inline_html(self):
         src = "this is <s>html</s>."
         out = self.conv(src)
-        self.assertEqual(out, prolog + "\nthis is :raw-html-m2r:`<s>html</s>`.\n")
+        self.assertEqual(out, PROLOG + "\nthis is :raw-html-md:`<s>html</s>`.\n")
 
     def test_block_html(self):
         src = "<h1>title</h1>"
@@ -478,10 +436,10 @@ class TestList(RendererTestBase):
         src = "\n".join(
             [
                 "1. list 1",
-                "2. list 2",
-                "  2. list 2.1",
-                "  3. list 2.2",
-                "3. list 3",
+                "1. list 2",
+                "    1. list 2.1",
+                "    1. list 2.2",
+                "1. list 3",
             ]
         )
         out = self.conv(src)
@@ -500,12 +458,12 @@ class TestList(RendererTestBase):
         src = "\n".join(
             [
                 "1. list 1",
-                "2. list 2",
-                "  3. list 2.1",
-                "  4. list 2.2",
-                "    5. list 2.2.1",
-                "    6. list 2.2.2",
-                "7. list 3",
+                "1. list 2",
+                "    1. list 2.1",
+                "    1. list 2.2",
+                "        1. list 2.2.1",
+                "        1. list 2.2.2",
+                "1. list 3",
             ]
         )
         out = self.conv(src)
@@ -532,10 +490,10 @@ class TestList(RendererTestBase):
             [
                 "1. list 1",
                 "2. list 2",
-                "  * list 2.1",
-                "  * list 2.2",
-                "    1. list 2.2.1",
-                "    2. list 2.2.2",
+                "   * list 2.1",
+                "   * list 2.2",
+                "     1. list 2.2.1",
+                "     2. list 2.2.2",
                 "7. list 3",
             ]
         )
@@ -579,7 +537,8 @@ class TestList(RendererTestBase):
             out,
             "\n".join(
                 [
-                    "\n\n* list 1",
+                    "\n",
+                    "* list 1",
                     "  list 1 cont",
                     "* list 2",
                     "  list 2 cont",
@@ -601,15 +560,15 @@ class TestList(RendererTestBase):
         src = "\n".join(
             [
                 "1. list 1",
-                "  list 1 cont",
+                "   list 1 cont",
                 "1. list 2",
-                "  list 2 cont",
-                "  1. list 2.1",
-                "    list 2.1 cont",
-                "  1. list 2.2",
-                "    list 2.2 cont",
-                "    1. list 2.2.1",
-                "    1. list 2.2.2",
+                "   list 2 cont",
+                "   1. list 2.1",
+                "      list 2.1 cont",
+                "   1. list 2.2",
+                "      list 2.2 cont",
+                "      1. list 2.2.1",
+                "      1. list 2.2.2",
                 "1. list 3",
             ]
         )
@@ -618,7 +577,8 @@ class TestList(RendererTestBase):
             out,
             "\n".join(
                 [
-                    "\n\n#. list 1",
+                    "\n",
+                    "#. list 1",
                     "   list 1 cont",
                     "#. list 2",
                     "   list 2 cont",
@@ -640,15 +600,15 @@ class TestList(RendererTestBase):
         src = "\n".join(
             [
                 "1. list 1",
-                "  list 1 cont",
+                "   list 1 cont",
                 "1. list 2",
-                "  list 2 cont",
-                "  * list 2.1",
-                "    list 2.1 cont",
-                "  * list 2.2",
-                "    list 2.2 cont",
-                "    1. list 2.2.1",
-                "    1. list 2.2.2",
+                "   list 2 cont",
+                "   * list 2.1",
+                "     list 2.1 cont",
+                "   * list 2.2",
+                "     list 2.2 cont",
+                "     1. list 2.2.1",
+                "     1. list 2.2.2",
                 "1. list 3",
             ]
         )
@@ -657,7 +617,8 @@ class TestList(RendererTestBase):
             out,
             "\n".join(
                 [
-                    "\n\n#. list 1",
+                    "\n",
+                    "#. list 1",
                     "   list 1 cont",
                     "#. list 2",
                     "   list 2 cont",
@@ -741,8 +702,8 @@ class TestFootNote(RendererTestBase):
             "\n".join(
                 [
                     "",
-                    "This is a\\ [#fn-1]_ "
-                    "footnote\\ [#fn-2]_ ref\\ [#fn-ref]_ with rst [#a]_.",
+                    "This is a[#fn-1]_ "
+                    "footnote[#fn-2]_ ref[#fn-ref]_ with rst [#a]_.",
                     "",
                     ".. [#a] note rst",  # one empty line inserted...
                     "",
@@ -766,6 +727,7 @@ class TestDirective(RendererTestBase):
         out = self.conv(src)
         self.assertEqual(out, "\n.. a")
 
+    @skip("not sure why this should work")
     def test_comment_indented(self):
         src = "    .. a"
         out = self.conv(src)

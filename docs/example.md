@@ -1,7 +1,7 @@
 # Example
 
 This page is written in mixed markdown and reST.
-Source code is [here](https://github.com/miyakogi/m2r/blob/master/docs/example.md).
+Source code is [here](https://github.com/jreese/sphinx-mdinclude/raw/main/docs/example.md).
 
 ## Basic Markups (inline)
 
@@ -16,10 +16,6 @@ Auto link to http://example.com/.
 Link to [example.com](http://example.com/) in markdown.
 
 Link to [anchor](#testlabel) in markdown.
-
-Link to [document](example.md) in markdown.
-
-Link to [document with anchor](example.md#testlabel) in markdown (doc directive does not support anchors, so this links to the document only).
 
 Link to `example.com <http://example.com/>`_ in reST.
 
