@@ -132,7 +132,7 @@ class TestInlineMarkdown(RendererTestBase):
         out = self.conv(src)
         self.assertEqual(out.replace("\n", ""), "**a**")
 
-    def test_autolink(self):
+    def test_not_an_autolink(self):
         src = "link to http://example.com/ in sentence."
         out = self.conv(src)
         self.assertEqual(out, "\n" + src + "\n")
@@ -146,6 +146,11 @@ class TestInlineMarkdown(RendererTestBase):
         src = "this is an [anchor link](#anchor)."
         out = self.conv_no_check(src)
         self.assertEqual(out, "\nthis is an :ref:`anchor link <anchor>`.\n")
+
+    def test_autolink(self):
+        src = "link <http://example.com>"
+        out = self.conv(src)
+        self.assertEqual(out, "\nlink `http://example.com <http://example.com>`_\n")
 
     def test_link_title(self):
         src = 'this is a [link](http://example.com/ "example").'

@@ -190,15 +190,7 @@ class RestRenderer(BaseRenderer):
         """
         return text
 
-    def autolink(self, link, is_email=False):
-        """Rendering a given link or email address.
-
-        :param link: link content or email address.
-        :param is_email: whether this is an email or not.
-        """
-        return link
-
-    def link(self, link, text, title):
+    def link(self, link, text, title=None):
         """Rendering a given link with content and title.
 
         :param link: href link for ``<a>`` tag.
