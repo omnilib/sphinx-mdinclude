@@ -8,6 +8,7 @@ import os.path
 from docutils import io, nodes, statemachine, utils
 from docutils.core import ErrorString
 from docutils.parsers import rst
+from docutils.parsers.rst import directives as rst_directives
 from docutils.utils import SafeString
 
 from . import RestMarkdown
@@ -59,7 +60,7 @@ class MdInclude(rst.Directive):
             self.lineno - self.state_machine.input_offset - 1
         )
         source_dir = os.path.dirname(os.path.abspath(source))
-        path = rst.directives.path(self.arguments[0])
+        path = rst_directives.path(self.arguments[0])
         path = os.path.normpath(os.path.join(source_dir, path))
         path = utils.relative_path(None, path)
         path = nodes.reprunicode(path)
