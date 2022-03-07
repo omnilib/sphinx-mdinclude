@@ -1,6 +1,20 @@
 sphinx-mdinclude
 ================
 
+v0.5.1
+------
+
+Bugfix release
+
+- Fix autolinks (#3, #2)
+
+```
+$ git shortlog -s v0.5.0...v0.5.1
+     3	John Reese
+     2	Tim Hatch
+```
+
+
 v0.5.0
 ------
 
