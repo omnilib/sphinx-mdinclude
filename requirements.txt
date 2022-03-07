@@ -1,2 +1,2 @@
 docutils==0.17.1
-mistune==0.8.4
+mistune==2.0.2
