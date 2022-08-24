@@ -6,7 +6,7 @@ Sphinx extension for including or writing pages in Markdown format.
 [![version](https://img.shields.io/pypi/v/sphinx-mdinclude.svg)](https://pypi.python.org/pypi/sphinx-mdinclude)
 [![documentation](https://img.shields.io/badge/docs-latest-success)](https://sphinx-mdinclude.readthedocs.io)
 [![changelog](https://img.shields.io/badge/change-log-blue)](https://sphinx-mdinclude.readthedocs.io)
-[![license](https://img.shields.io/pypi/l/sphinx-mdinclude.svg)](https://github.com/jreese/sphinx-mdinclude/blob/main/LICENSE)
+[![license](https://img.shields.io/pypi/l/sphinx-mdinclude.svg)](https://github.com/amyreese/sphinx-mdinclude/blob/main/LICENSE)
 
 
 sphinx-mdinclude is a simple Sphinx extension that enables including Markdown documents
@@ -70,11 +70,11 @@ directive. This applies the conversion from Markdown to reStructuredText format.
 
 ## License
 
-`sphinx-mdinclude` is copyright Hiroyuki Takagi, CrossNox, and [John Reese][],
+`sphinx-mdinclude` is copyright Hiroyuki Takagi, CrossNox, and [Amethyst Reese][],
 and licensed under the MIT license. I am providing code in this repository to you
 under an open source license. This is my personal repository; the license you receive
 to my code is from me and not from my employer. See the [LICENSE][] file for details.
 
-[John Reese]: https://jreese.sh
-[LICENSE]: https://github.com/jreese/sphinx-mdinclude/blob/main/LICENSE
+[Amethyst Reese]: https://noswap.com
+[LICENSE]: https://github.com/amyreese/sphinx-mdinclude/blob/main/LICENSE
 

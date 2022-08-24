@@ -7,10 +7,10 @@ name = "sphinx_mdinclude"
 authors = [
     {name = "Hiroyuki Takagi", email = "miyako.dev@gmail.com"},
     {name = "CrossNox", email = "ijmermet+m2r2@gmail.com"},
-    {name = "John Reese", email = "john@noswap.com"},
+    {name = "Amethyst Reese", email = "amy@noswap.com"},
 ]
 maintainers = [
-    {name = "John Reese", email = "john@noswap.com"},
+    {name = "Amethyst Reese", email = "amy@noswap.com"},
 ]
 readme = "README.md"
 requires-python = ">=3.6"
@@ -35,7 +35,7 @@ keywords = ["Markdown", "reStructuredText", "sphinx-extension"]
 dynamic = ["version", "description"]
 
 [project.urls]
-Github = "https://github.com/jreese/sphinx-mdinclude"
+Github = "https://github.com/amyreese/sphinx-mdinclude"
 
 
 [tool.attribution]

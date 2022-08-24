@@ -9,8 +9,8 @@
 import datetime
 
 project = "sphinx-mdinclude"
-copyright = f"{datetime.date.today().year}, Hiroyuki Takagi, CrossNox, John Reese"
-author = "John Reese"
+copyright = f"{datetime.date.today().year}, Hiroyuki Takagi, CrossNox, Amethyst Reese"
+author = "Amethyst Reese"
 
 
 # -- General configuration ---------------------------------------------------
@@ -58,12 +58,12 @@ html_theme_options = {
     "fixed_sidebar": True,
     "badge_branch": "main",
     "github_button": False,
-    "github_user": "jreese",
+    "github_user": "amyreese",
     "github_repo": "sphinx-mdinclude",
     "show_powered_by": False,
     "sidebar_collapse": False,
     "extra_nav_links": {
-        "Report Issues": "https://github.com/jreese/sphinx-mdinclude/issues",
+        "Report Issues": "https://github.com/amyreese/sphinx-mdinclude/issues",
     },
 }
 
