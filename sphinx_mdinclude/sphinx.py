@@ -6,10 +6,14 @@ import os
 import os.path
 
 from docutils import io, nodes, statemachine, utils
-from docutils.core import ErrorString
 from docutils.parsers import rst
 from docutils.parsers.rst import directives as rst_directives
-from docutils.utils import SafeString
+
+try:  # new
+    from docutils.utils.error_reporting import ErrorString, SafeString
+except ImportError:  # old
+    from docutils.core import ErrorString  # type: ignore
+    from docutils.utils import SafeString  # type: ignore
 
 from . import RestMarkdown
 
