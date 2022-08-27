@@ -7,11 +7,16 @@
 # -- Project information -----------------------------------------------------
 
 import datetime
+import pathlib
+import sys
 
 project = "sphinx-mdinclude"
 copyright = f"{datetime.date.today().year}, Hiroyuki Takagi, CrossNox, Amethyst Reese"
 author = "Amethyst Reese"
 
+root = pathlib.Path(__file__).parent.parent
+print(f"{root = !r}")
+sys.path.insert(0, root.as_posix())
 
 # -- General configuration ---------------------------------------------------
 
