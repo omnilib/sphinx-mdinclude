@@ -1,6 +1,20 @@
 sphinx-mdinclude
 ================
 
+v0.5.2
+------
+
+Maintenance release
+
+- Add support for docutils `0.19` (#8)
+- Enable building docs without installing package (#6)
+
+```
+$ git shortlog -s v0.5.1...v0.5.2
+     6	Amethyst Reese
+```
+
+
 v0.5.1
 ------
 
