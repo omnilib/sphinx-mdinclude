@@ -15,7 +15,7 @@ copyright = f"{datetime.date.today().year}, Hiroyuki Takagi, CrossNox, Amethyst 
 author = "Amethyst Reese"
 
 root = pathlib.Path(__file__).parent.parent
-print(f"{root = !r}")
+print(f"root = {repr(root)}")
 sys.path.insert(0, root.as_posix())
 
 # -- General configuration ---------------------------------------------------
