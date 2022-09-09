@@ -30,6 +30,9 @@ test:
 	python -m coverage report
 	python -m mypy --install-types --non-interactive -p $(SRCS)
 
+deps:
+	python -m pessimist --requirements= -c 'python -m sphinx_mdinclude.tests' .
+
 html: .venv README.md docs/*.md docs/conf.py
 	source .venv/bin/activate && sphinx-build -b html docs html
 
