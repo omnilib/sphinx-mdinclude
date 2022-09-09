@@ -10,7 +10,11 @@ from docutils.parsers import rst
 from docutils.parsers.rst import directives as rst_directives
 
 try:  # new
-    from docutils.utils.error_reporting import ErrorString, SafeString
+    from docutils.io import (  # type: ignore  # typeshed  #8716
+        error_string as ErrorString,
+    )
+
+    SafeString = str
 except ImportError:  # old
     from docutils.core import ErrorString  # type: ignore
     from docutils.utils import SafeString  # type: ignore
