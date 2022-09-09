@@ -16,7 +16,8 @@ readme = "README.md"
 requires-python = ">=3.6"
 dependencies = [
     "mistune >= 2.0",
-    "docutils >=0.15,<1.0",
+    "docutils >=0.16,<1.0",
+    "pygments >= 2.8",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
