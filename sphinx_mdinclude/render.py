@@ -1,10 +1,14 @@
 import re
 import textwrap
 from functools import partial
+from typing import Callable
 
 from docutils.utils import column_width
 from mistune import Markdown
-from mistune.plugins import PLUGINS
+try:
+    from mistune.plugins import PLUGINS
+except ImportError:
+    from mistune.plugins import _plugins, import_plugin
 from mistune.renderers import BaseRenderer
 
 from .parse import RestBlockParser, RestInlineParser
@@ -17,6 +21,20 @@ PROLOG = """\
 
 """
 
+def get_plugin(name: str) -> Callable:
+    try:
+        return get_plugin_v2(name)
+    except ImportError:
+        return get_plugin_v3(name)
+
+def get_plugin_v2(name: str) -> Callable:
+    from mistune.plugins import PLUGINS
+    return PLUGINS[name]
+
+def get_plugin_v3(name: str) -> Callable:
+    from mistune.plugins import _plugins, import_plugin, _cached_modules
+    import_plugin(name)
+    return _cached_modules[name]
 
 class RestRenderer(BaseRenderer):
     _include_raw_html = False
@@ -311,7 +329,7 @@ class RestMarkdown(Markdown):
         renderer = renderer or RestRenderer()
         block = block or RestBlockParser()
         inline = inline or RestInlineParser(renderer)
-        plugins = plugins or [PLUGINS[p] for p in DEFAULT_PLUGINS]
+        plugins = plugins or [MistunePluginLoader.get_plugin(p) for p in DEFAULT_PLUGINS]
 
         super().__init__(renderer, block=block, inline=inline, plugins=plugins)
 
@@ -326,6 +344,26 @@ class RestMarkdown(Markdown):
             return PROLOG + text
         else:
             return text
+
+
+class MistunePluginLoader:
+    @staticmethod
+    def get_plugin(name: str) -> Callable:
+        try:
+            return get_plugin_v2(name)
+        except ImportError:
+            return get_plugin_v3(name)
+
+    @staticmethod
+    def get_plugin_v2(name: str) -> Callable:
+        from mistune.plugins import PLUGINS
+        return PLUGINS[name]
+
+    @staticmethod
+    def get_plugin_v3(name: str) -> Callable:
+        from mistune.plugins import _plugins, import_plugin, _cached_modules
+        import_plugin(name)
+        return _cached_modules[name]
 
 
 def convert(text, **kwargs):
