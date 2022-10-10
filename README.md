@@ -5,8 +5,8 @@ Sphinx extension for including or writing pages in Markdown format.
 
 [![version](https://img.shields.io/pypi/v/sphinx-mdinclude.svg)](https://pypi.python.org/pypi/sphinx-mdinclude)
 [![documentation](https://img.shields.io/badge/docs-latest-success)](https://sphinx-mdinclude.readthedocs.io)
-[![changelog](https://img.shields.io/badge/change-log-blue)](https://sphinx-mdinclude.readthedocs.io)
-[![license](https://img.shields.io/pypi/l/sphinx-mdinclude.svg)](https://github.com/amyreese/sphinx-mdinclude/blob/main/LICENSE)
+[![changelog](https://img.shields.io/badge/change-log-blue)](https://sphinx-mdinclude.omnilidb.dev/en/latest/changelog.html)
+[![license](https://img.shields.io/pypi/l/sphinx-mdinclude.svg)](https://github.com/omnilib/sphinx-mdinclude/blob/main/LICENSE)
 
 
 sphinx-mdinclude is a simple Sphinx extension that enables including Markdown documents
@@ -76,5 +76,5 @@ under an open source license. This is my personal repository; the license you re
 to my code is from me and not from my employer. See the [LICENSE][] file for details.
 
 [Amethyst Reese]: https://noswap.com
-[LICENSE]: https://github.com/amyreese/sphinx-mdinclude/blob/main/LICENSE
+[LICENSE]: https://github.com/omnilib/sphinx-mdinclude/blob/main/LICENSE
 

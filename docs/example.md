@@ -1,7 +1,7 @@
 # Example
 
 This page is written in mixed markdown and reST.
-Source code is [here](https://github.com/amyreese/sphinx-mdinclude/raw/main/docs/example.md).
+Source code is [here](https://github.com/omnilib/sphinx-mdinclude/raw/main/docs/example.md).
 
 ## Basic Markups (inline)
 

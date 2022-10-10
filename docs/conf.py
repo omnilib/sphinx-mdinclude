@@ -63,12 +63,12 @@ html_theme_options = {
     "fixed_sidebar": True,
     "badge_branch": "main",
     "github_button": False,
-    "github_user": "amyreese",
+    "github_user": "omnilib",
     "github_repo": "sphinx-mdinclude",
     "show_powered_by": False,
     "sidebar_collapse": False,
     "extra_nav_links": {
-        "Report Issues": "https://github.com/amyreese/sphinx-mdinclude/issues",
+        "Report Issues": "https://github.com/omnilib/sphinx-mdinclude/issues",
     },
 }
 
@@ -79,7 +79,7 @@ html_sidebars = {
         "navigation.html",
         "relations.html",
         "searchbox.html",
-        # "omnilib.html",
+        "omnilib.html",
     ],
 }
 
