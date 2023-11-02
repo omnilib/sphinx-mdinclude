@@ -35,7 +35,7 @@ dev = [
     "docutils==0.19",
     "mistune==2.0.4",
 
-    "attribution==1.5.2",
+    "attribution==1.6.2",
     "black==23.10.1",
     "coverage==6.4.4",
     "flake8==6.1.0",
