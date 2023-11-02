@@ -37,7 +37,7 @@ dev = [
 
     "attribution==1.6.2",
     "black==23.10.1",
-    "coverage==6.4.4",
+    "coverage==7.3.2",
     "flake8==6.1.0",
     "flit==3.9.0",
     "mypy==1.6.1",
