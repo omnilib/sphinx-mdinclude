@@ -44,7 +44,7 @@ dev = [
     "pessimist==0.9.3",
     "sphinx==5.1.1",
     "ufmt==2.3.0",
-    "usort==1.0.4",
+    "usort==1.0.7",
 ]
 
 [project.urls]
