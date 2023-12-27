@@ -45,7 +45,7 @@ Bugfix release
 
 ```text
 $ git shortlog -s v0.5.0...v0.5.1
-     3	John Reese
+     3	Amethyst Reese
      2	Tim Hatch
 ```
 
@@ -60,7 +60,7 @@ Feature release
 
 ```text
 $ git shortlog -s v0.5.0b1...v0.5.0
-     3	John Reese
+     3	Amethyst Reese
 ```
 
 
@@ -74,7 +74,7 @@ Feature release
 
 ```text
 $ git shortlog -s v0.4.0...v0.5.0b1
-     7	John Reese
+     7	Amethyst Reese
 ```
 
 
@@ -95,7 +95,7 @@ Feature release
 
 ```text
 $ git shortlog -s v0.4.0b1...v0.4.0
-     4	John Reese
+     4	Amethyst Reese
      1	dependabot[bot]
 ```
 
@@ -118,7 +118,7 @@ Beta release
 $ git shortlog -s v0.2.7...v0.4.0b1
     10	CrossNox
      1	Ezequiel Rosas
-    18	John Reese
+    18	Amethyst Reese
      1	illes
      1	kalvdans
 ```
