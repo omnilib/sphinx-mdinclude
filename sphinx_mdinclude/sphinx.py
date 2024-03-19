@@ -116,6 +116,7 @@ class MdInclude(rst.Directive):
 
         config = self.state.document.settings.env.config
         converter = RestMarkdown(
+            mdinclude_path=rst_directives.path(self.arguments[0]),
             no_underscore_emphasis=config.no_underscore_emphasis,
             parse_relative_links=config.md_parse_relative_links,
             anonymous_references=config.md_anonymous_references,

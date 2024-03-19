@@ -1,3 +1,4 @@
+import os
 import re
 import textwrap
 from functools import partial
@@ -31,7 +32,8 @@ class RestRenderer(BaseRenderer):
         6: "#",
     }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, mdinclude_path, *args, **kwargs):
+        self.mdinclude_path = mdinclude_path
         self._indent_block = partial(textwrap.indent, prefix=self.indent)
         super().__init__(*args, **kwargs)
 
@@ -225,11 +227,16 @@ class RestRenderer(BaseRenderer):
         """
         # rst does not support title option
         # and I couldn't find title attribute in HTML standard
+
+        # generate the path to the image file relative to the rst file
+        image_path = os.path.join(os.path.dirname(self.mdinclude_path), src).replace(
+            "\\", "/"
+        )
         return "\n".join(
             [
                 "",
-                ".. image:: {}".format(src),
-                "   :target: {}".format(src),
+                ".. image:: {}".format(image_path),
+                "   :target: {}".format(image_path),
                 "   :alt: {}".format(alt),
                 "",
             ]
@@ -307,8 +314,16 @@ class RestRenderer(BaseRenderer):
 
 
 class RestMarkdown(Markdown):
-    def __init__(self, renderer=None, block=None, inline=None, plugins=None, **kwargs):
-        renderer = renderer or RestRenderer()
+    def __init__(
+        self,
+        mdinclude_path=".",
+        renderer=None,
+        block=None,
+        inline=None,
+        plugins=None,
+        **kwargs,
+    ):
+        renderer = renderer or RestRenderer(mdinclude_path)
         block = block or RestBlockParser()
         inline = inline or RestInlineParser(renderer)
         plugins = plugins or [PLUGINS[p] for p in DEFAULT_PLUGINS]
