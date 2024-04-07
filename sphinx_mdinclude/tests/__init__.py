@@ -2,7 +2,7 @@ from .test_renderer import (
     TestBasic,
     TestBlockQuote,
     TestCodeBlock,
-    TestConplexText,
+    TestComplexText,
     TestDirective,
     TestFootNote,
     TestHeading,

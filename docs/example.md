@@ -7,11 +7,11 @@ Source code is [here](https://github.com/omnilib/sphinx-mdinclude/raw/main/docs/
 
 A **strong**, *emphasis*, ~~deleted~~, `code with single-backtick`,
 ``code with two-backticks``, ```code can include multiple (``) backticks```,
-:code:`reST's code role`, and <del>inline html</del>delete.
+:code:`reST's code role`, and <del>inline html</del> delete.
 
 ### Link
 
-Auto link to http://example.com/.
+Auto link to <http://example.com/>.
 
 Link to [example.com](http://example.com/) in markdown.
 
