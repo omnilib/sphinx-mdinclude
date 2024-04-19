@@ -2,7 +2,7 @@
 
 ## SubTitle
 
-__content__
+**content**
 
 ## サブタイトル
 

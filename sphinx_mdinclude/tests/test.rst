@@ -20,6 +20,6 @@ Also within parentheses (:math:`x^2`) and (:math:`z^3`).
 
 .. code-block:: python
 
-    class Foo:
-        def bar(self, arg: str = "") -> int:
-            return len(arg)
+   class Foo:
+       def bar(self, arg: str = "") -> int:
+           return len(arg)

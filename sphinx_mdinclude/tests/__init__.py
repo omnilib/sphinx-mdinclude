@@ -12,3 +12,4 @@ from .test_renderer import (
     TestRestCode,
     TestTable,
 )
+from .test_smoke import SmokeTest

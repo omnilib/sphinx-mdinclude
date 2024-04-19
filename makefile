@@ -29,8 +29,9 @@ test:
 deps:
 	python -m pessimist --requirements= -c 'python -m sphinx_mdinclude.tests' .
 
+.PHONY: html
 html: .venv README.md docs/*.md docs/conf.py
-	source .venv/bin/activate && sphinx-build -b html docs html
+	source .venv/bin/activate && sphinx-build -ab html docs html
 
 clean:
 	rm -rf build dist html *.egg-info .mypy_cache

@@ -4,4 +4,4 @@
 import unittest
 
 if __name__ == "__main__":
-    unittest.main("sphinx_mdinclude.tests", verbosity=1)
+    unittest.main("sphinx_mdinclude.tests", verbosity=2)
