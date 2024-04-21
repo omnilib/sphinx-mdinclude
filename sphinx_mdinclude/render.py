@@ -1,14 +1,17 @@
 import re
 import textwrap
 from functools import partial
+from importlib import import_module
+from typing import Any, Dict
 
 from docutils.utils import column_width
 from mistune import Markdown
-from mistune.plugins import PLUGINS
-from mistune.renderers import BaseRenderer
+from mistune.core import BaseRenderer
+from mistune.plugins import _plugins
 
 from .parse import RestBlockParser, RestInlineParser
 
+CACHED_MODULES: Dict[str, Any] = {}
 DEFAULT_PLUGINS = ["strikethrough", "footnotes", "table"]
 
 PROLOG = """\
@@ -35,6 +38,36 @@ class RestRenderer(BaseRenderer):
         self._indent_block = partial(textwrap.indent, prefix=self.indent)
         super().__init__(*args, **kwargs)
 
+    def render_token(self, token, state):
+        # based on mistune 3.0.2, mistune/renderers/html.py
+        func = self._get_method(token["type"])
+        attrs = token.get("attrs")
+        style = token.get("style")
+
+        if "raw" in token:
+            text = token["raw"]
+        elif "children" in token:
+            text = self.render_tokens(token["children"], state)
+        else:
+            if attrs:
+                return func(**attrs)
+            else:
+                return func()
+
+        # We have to special-case block_code, as it needs to know the
+        # style as well to determine whether to add a blank line at the
+        # end (so as to retain the original behaviour)
+        if token["type"] == "block_code":
+            if attrs:
+                return func(text, style=style, **attrs)
+            else:
+                return func(text, style=style)
+
+        if attrs:
+            return func(text, **attrs)
+        else:
+            return func(text)
+
     def finalize(self, data):
         return "".join(data)
 
@@ -42,15 +75,16 @@ class RestRenderer(BaseRenderer):
         self._include_raw_html = True
         return r":raw-html-md:`{}`".format(html)
 
-    def block_code(self, code, lang=None):
-        if lang == "math":
+    def block_code(self, code, style, info=None):
+        if info == "math":
             first_line = "\n.. math::\n\n"
-        elif lang:
-            first_line = "\n.. code-block:: {}\n\n".format(lang)
+        elif info:
+            first_line = "\n.. code-block:: {}\n\n".format(info)
         else:
             # first_line = "\n::\n\n"
             first_line = "\n.. code-block::\n\n"
-        return first_line + self._indent_block(code)
+        newline = "\n" if style == "indent" else ""
+        return first_line + self._indent_block(code + newline)
 
     def block_quote(self, text):
         # text includes some empty line
@@ -64,14 +98,14 @@ class RestRenderer(BaseRenderer):
 
         :param html: text content of the html snippet.
         """
-        return "\n\n.. raw:: html\n\n" + self._indent_block(html) + "\n\n"
+        return "\n\n.. raw:: html\n\n" + self._indent_block(html) + "\n"
 
-    def heading(self, text, level, raw=None):
+    def heading(self, text, level, **attrs):
         """Rendering header/heading tags like ``<h1>`` ``<h2>``.
 
         :param text: rendered text content for the header.
         :param level: a number for the header level, for example: 1.
-        :param raw: raw text content of the header.
+        :param attrs: other attributes of the header.
         """
         return "\n{0}\n{1}\n".format(text, self.hmarks[level] * column_width(text))
 
@@ -79,21 +113,22 @@ class RestRenderer(BaseRenderer):
         """Rendering method for ``<hr>`` tag."""
         return "\n----\n"
 
-    def list(self, body, ordered, level, start):
+    def list(self, text, ordered, **attrs):
         """Rendering list tags like ``<ul>`` and ``<ol>``.
 
-        :param body: body contents of the list.
+        :param text: body contents of the list.
         :param ordered: whether this list is ordered or not.
+        :param attrs: other attributes of the list.
         """
         mark = "#. " if ordered else "* "
-        lines = body.splitlines()
+        lines = text.splitlines()
         for i, line in enumerate(lines):
             if line and not line.startswith(self.list_marker):
                 lines[i] = " " * len(mark) + line
         result = "\n{}\n".format("\n".join(lines)).replace(self.list_marker, mark)
         return result
 
-    def list_item(self, text, level):
+    def list_item(self, text):
         """Rendering list item snippet. Like ``<li>``."""
         return "\n" + self.list_marker + text
 
@@ -131,12 +166,12 @@ class RestRenderer(BaseRenderer):
                 clist.append("  " + c)
         return "\n".join(clist) + "\n"
 
-    def table_cell(self, content, align=None, is_head=False):
+    def table_cell(self, content, align=None, head=False):
         """Rendering a table cell. Like ``<th>`` ``<td>``.
 
         :param content: content of current table cell.
-        :param header: whether this is header or not.
         :param align: align of current table cell.
+        :param head: whether this is header or not.
         """
         return "- " + content + "\n"
 
@@ -162,19 +197,24 @@ class RestRenderer(BaseRenderer):
 
         :param text: text content for inline code.
         """
-        if "``" not in text:
-            return r"``{}``".format(text)
-        else:
+        cannot_inline = "``" in text or text[0] in [" ", "`"] or text[-1] in [" ", "`"]
+        if cannot_inline:
             # actually, docutils split spaces in literal
             return self._raw_html(
                 '<code class="docutils literal">'
                 '<span class="pre">{}</span>'
                 "</code>".format(text.replace("`", "&#96;"))
             )
+        else:
+            return r"``{}``".format(text)
 
     def linebreak(self):
         """Rendering line break like ``<br>``."""
         return " " + self._raw_html("<br />") + "\n"
+
+    def softbreak(self):
+        """Rendering soft line break."""
+        return "\n"
 
     def strikethrough(self, text):
         """Rendering ~~strikethrough~~ text.
@@ -190,47 +230,47 @@ class RestRenderer(BaseRenderer):
         """
         return text
 
-    def link(self, link, text, title=None):
+    def link(self, text, url, title=None):
         """Rendering a given link with content and title.
 
-        :param link: href link for ``<a>`` tag.
-        :param title: title content for `title` attribute.
         :param text: text content for description.
+        :param url: URL for ``<a>`` tag.
+        :param title: title content for `title` attribute.
         """
         if text.startswith("\n.. image::"):
-            text = re.sub(r":target: (.*)\n", f":target: {link}\n", text)
+            text = re.sub(r":target: (.*)\n", f":target: {url}\n", text)
             return text
 
         underscore = "_"
         if title:
             return self._raw_html(
-                '<a href="{link}" title="{title}">{text}</a>'.format(
-                    link=link, title=title, text=text
+                '<a href="{url}" title="{title}">{text}</a>'.format(
+                    url=url, title=title, text=text
                 )
             )
-        if link.startswith("#"):
-            target = link[1:]
+        if url.startswith("#"):
+            target = url[1:]
             return r":ref:`{text} <{target}>`".format(target=target, text=text)
 
         return r"`{text} <{target}>`{underscore}".format(
-            target=link, text=text, underscore=underscore
+            target=url, text=text, underscore=underscore
         )
 
-    def image(self, src, alt, title):
+    def image(self, text, url, title=None):
         """Rendering a image with title and text.
 
-        :param src: source link of the image.
-        :param title: title text of the image.
         :param text: alt text of the image.
+        :param url: source link of the image.
+        :param title: title text of the image.
         """
         # rst does not support title option
         # and I couldn't find title attribute in HTML standard
         return "\n".join(
             [
                 "",
-                ".. image:: {}".format(src),
-                "   :target: {}".format(src),
-                "   :alt: {}".format(alt),
+                ".. image:: {}".format(url),
+                "   :target: {}".format(url),
+                "   :alt: {}".format(text),
                 "",
             ]
         )
@@ -285,19 +325,19 @@ class RestRenderer(BaseRenderer):
 
     """Below outputs are for rst."""
 
-    def rest_role(self, text):
-        return text
+    def rest_role(self, raw):
+        return raw
 
-    def rest_link(self, text):
-        return text
+    def rest_link(self, raw):
+        return raw
 
-    def inline_math(self, math):
+    def inline_math(self, raw):
         """Extension of recommonmark."""
-        return r":math:`{}`".format(math)
+        return r":math:`{}`".format(raw)
 
-    def eol_literal_marker(self, marker):
+    def eol_literal_marker(self, raw):
         """Extension of recommonmark."""
-        return marker
+        return raw
 
     def directive(self, text):
         return "\n" + text
@@ -305,21 +345,38 @@ class RestRenderer(BaseRenderer):
     def rest_code_block(self, text):
         return "\n\n"
 
+    def blank_line(self):
+        return ""
+
 
 class RestMarkdown(Markdown):
     def __init__(self, renderer=None, block=None, inline=None, plugins=None, **kwargs):
         renderer = renderer or RestRenderer()
         block = block or RestBlockParser()
-        inline = inline or RestInlineParser(renderer)
-        plugins = plugins or [PLUGINS[p] for p in DEFAULT_PLUGINS]
+        inline = inline or RestInlineParser()
+        plugins_str = plugins or [_plugins[p] for p in DEFAULT_PLUGINS]
+        plugins = []
+        for plugin_str in plugins_str:
+            if plugin_str in CACHED_MODULES:
+                plugins.append(CACHED_MODULES[plugin_str])
+            else:
+                if isinstance(plugin_str, str):
+                    module_path, func_name = plugin_str.rsplit(".", 1)
+                    module = import_module(module_path)
+                    plugin = getattr(module, func_name)
+                else:
+                    # Presumably a function has been passed
+                    plugin = plugin_str
+                CACHED_MODULES[plugin_str] = plugin
+                plugins.append(plugin)
 
         super().__init__(renderer, block=block, inline=inline, plugins=plugins)
 
     def parse(self, text):
-        output = super().parse(text)
+        output, state = super().parse(text)
         output = self.post_process(output)
 
-        return output
+        return output, state
 
     def post_process(self, text):
         if self.renderer._include_raw_html:

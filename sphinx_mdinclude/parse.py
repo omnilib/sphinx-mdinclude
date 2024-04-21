@@ -1,7 +1,7 @@
-import re
 from typing import Any, Dict, Match, Tuple
 
 from mistune import BlockParser, InlineParser
+from mistune.core import BlockState, InlineState
 from mistune.inline_parser import HTML_ATTRIBUTES, HTML_TAGNAME
 
 
@@ -11,53 +11,38 @@ Element = Tuple[str, ...]
 
 
 class RestBlockParser(BlockParser):
-    DIRECTIVE = re.compile(
-        r"^( *\.\..*?)\n(?=\S)",
-        re.DOTALL | re.MULTILINE,
-    )
-    ONELINE_DIRECTIVE = re.compile(
-        r"^( *\.\..*?)$",
-        re.DOTALL | re.MULTILINE,
-    )
-    REST_CODE_BLOCK = re.compile(
-        r"^::\s*$",
-        re.DOTALL | re.MULTILINE,
+    SPECIFICATION = BlockParser.SPECIFICATION.copy()
+    SPECIFICATION.update(
+        {
+            "directive": r"(?ms:^(?P<directive_1> *\.\..*?)\n(?=\S))",
+            "oneline_directive": r"(?ms:^(?P<directive_2> *\.\..*?)$)",
+            "rest_code_block": r"(?m:^::\s*$)",
+        }
     )
 
-    RULE_NAMES = BlockParser.RULE_NAMES + (
+    DEFAULT_RULES = BlockParser.DEFAULT_RULES + (  # type: ignore[has-type]
         "directive",
         "oneline_directive",
         "rest_code_block",
     )
 
-    def parse_directive(self, match: Match, state: State) -> Token:
-        return {"type": "directive", "text": match.group(1)}
+    def parse_directive(self, m: Match, state: BlockState) -> int:
+        state.append_token({"type": "directive", "raw": m.group("directive_1")})
+        return m.end()
 
-    def parse_oneline_directive(self, match: Match, state: State) -> Token:
+    def parse_oneline_directive(self, m: Match, state: BlockState) -> int:
         # reuse directive output
-        return {"type": "directive", "text": match.group(1)}
+        state.append_token({"type": "directive", "raw": m.group("directive_2")})
+        # $ does not count '\n'
+        return m.end() + 1
 
-    def parse_rest_code_block(self, match: Match, state: State) -> Token:
-        return {"type": "rest_code_block", "text": ""}
+    def parse_rest_code_block(self, m: Match, state: BlockState) -> int:
+        state.append_token({"type": "rest_code_block", "text": ""})
+        # $ does not count '\n'
+        return m.end() + 1
 
 
 class RestInlineParser(InlineParser):
-    REST_ROLE = r":.*?:`.*?`|`[^`]+`:.*?:"
-    REST_LINK = r"`[^`]*?`_"
-    INLINE_MATH = r"`\$((.*?)\$`)"
-    EOL_LITERAL_MARKER = r"(\s+)?::\s*$"
-
-    # add colon and space as special text
-    TEXT = r"^[\s\S]+?(?=[\\<!\[:_*`~ ]|https?://| {2,}\n|$)"
-
-    # __word__ or **word**
-    DOUBLE_EMPHASIS = r"^([_*]){2}(?P<text>[\s\S]+?)\1{2}(?!\1)"
-    # _word_ or *word*
-    EMPHASIS = (
-        r"^\b_((?:__|[^_])+?)_\b",  # _word_
-        r"^\*(?P<text>(?:\*\*|[^\*])+?)\*(?!\*)",  # *word*
-    )
-
     # make inline_html span open/contents/close instead of just a single tag
     INLINE_HTML = (
         r"(?<!\\)<" + HTML_TAGNAME + HTML_ATTRIBUTES + r"\s*>"  # open tag
@@ -69,40 +54,44 @@ class RestInlineParser(InlineParser):
         r"(?<!\\)<!\[CDATA[\s\S]+?\]\]>"  # cdata
     )
 
-    RULE_NAMES = (
+    SPECIFICATION = InlineParser.SPECIFICATION.copy()
+    SPECIFICATION.update(
+        {
+            "inline_html": INLINE_HTML,
+            "inline_math": r"`\$(?P<math_1>.*?)\$`",
+            "rest_role": r":.*?:`.*?`|`[^`]+`:.*?:",
+            "rest_link": r"`[^`]*?`_",
+            "eol_literal_marker": r"(?P<eol_space>\s+)?::\s*$",
+        }
+    )
+
+    # Order is important: need these rules to be checked before the
+    # default rules
+    DEFAULT_RULES = (
         "inline_math",
-        # "image_link",
         "rest_role",
         "rest_link",
         "eol_literal_marker",
-    ) + InlineParser.RULE_NAMES
+    ) + InlineParser.DEFAULT_RULES  # type: ignore[has-type]
 
-    def parse_double_emphasis(self, match: Match, state: State) -> Element:
-        # may include code span
-        return "double_emphasis", match.group("text")
-
-    def parse_emphasis(self, match: Match, state: State) -> Element:
-        # may include code span
-        return "emphasis", match.group("text") or match.group(1)
-
-    def parse_image_link(self, match: Match, state: State) -> Element:
+    def parse_rest_role(self, m: Match, state: InlineState) -> int:
         """Pass through rest role."""
-        alt, src, target = match.groups()
-        return "image_link", src, target, alt
+        state.append_token({"type": "rest_role", "raw": m.group(0)})
+        return m.end()
 
-    def parse_rest_role(self, match: Match, state: State) -> Element:
-        """Pass through rest role."""
-        return "rest_role", match.group(0)
-
-    def parse_rest_link(self, match: Match, state: State) -> Element:
+    def parse_rest_link(self, m: Match, state: InlineState) -> int:
         """Pass through rest link."""
-        return "rest_link", match.group(0)
+        state.append_token({"type": "rest_link", "raw": m.group(0)})
+        return m.end()
 
-    def parse_inline_math(self, match: Match, state: State) -> Element:
-        """Pass through rest link."""
-        return "inline_math", match.group(2)
+    def parse_inline_math(self, m: Match, state: InlineState) -> int:
+        """Pass through inline math."""
+        state.append_token({"type": "inline_math", "raw": m.group("math_1")})
+        return m.end()
 
-    def parse_eol_literal_marker(self, match: Match, state: State) -> Element:
+    def parse_eol_literal_marker(self, m: Match, state: InlineState) -> int:
         """Pass through rest link."""
-        marker = ":" if match.group(1) is None else ""
-        return "eol_literal_marker", marker
+        marker = ":" if m.group("eol_space") is None else ""
+        state.append_token({"type": "eol_literal_marker", "raw": marker})
+        # $ does not count '\n'
+        return m.end() + 1

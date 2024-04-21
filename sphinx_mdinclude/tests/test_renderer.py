@@ -108,6 +108,44 @@ class TestInlineMarkdown(RendererTestBase):
             '<span class="pre">a&#96;&#96;a</span></code>`',
         )
 
+    def test_inline_code_with_opening_space(self):
+        src = "`` `a`:role:``"
+        out = self.conv(src)
+        self.assertEqual(
+            out.strip(),
+            ".. role:: raw-html-md(raw)\n"
+            "   :format: html\n\n\n"
+            ':raw-html-md:`<code class="docutils literal">'
+            '<span class="pre"> &#96;a&#96;:role:</span></code>`',
+        )
+
+    def test_inline_code_with_closing_space(self):
+        src = "``:role:`a` ``"
+        out = self.conv(src)
+        self.assertEqual(
+            out.strip(),
+            ".. role:: raw-html-md(raw)\n"
+            "   :format: html\n\n\n"
+            ':raw-html-md:`<code class="docutils literal">'
+            '<span class="pre">:role:&#96;a&#96; </span></code>`',
+        )
+
+    def test_inline_code_with_opening_and_closing_space(self):
+        src = "`` a ``"
+        out = self.conv(src)
+        self.assertEqual(out, "\n``a``\n")
+
+    def test_inline_code_with_opening_and_closing_space_and_backtick(self):
+        src = "`` `a` ``"
+        out = self.conv(src)
+        self.assertEqual(
+            out.strip(),
+            ".. role:: raw-html-md(raw)\n"
+            "   :format: html\n\n\n"
+            ':raw-html-md:`<code class="docutils literal">'
+            '<span class="pre">&#96;a&#96;</span></code>`',
+        )
+
     def test_strikethrough(self):
         src = "~~a~~"
         self.conv(src)
@@ -642,7 +680,7 @@ class TestList(RendererTestBase):
         )
 
 
-class TestConplexText(RendererTestBase):
+class TestComplexText(RendererTestBase):
     def test_code(self):
         src = """
 some sentence
@@ -708,13 +746,13 @@ class TestFootNote(RendererTestBase):
                 [
                     "",
                     "This is a[#fn-1]_ "
-                    "footnote[#fn-2]_ ref[#fn-ref]_ with rst [#a]_.",
+                    "footnote[#fn-2]_ ref[#fn-REF]_ with rst [#a]_.",
                     "",
                     ".. [#a] note rst",  # one empty line inserted...
                     "",
                     ".. [#fn-1] note 1",
                     ".. [#fn-2] note 2",
-                    ".. [#fn-ref] note ref",
+                    ".. [#fn-REF] note ref",
                     "",
                 ]
             ),
