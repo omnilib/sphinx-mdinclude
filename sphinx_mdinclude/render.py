@@ -2,16 +2,16 @@ import re
 import textwrap
 from functools import partial
 from importlib import import_module
+from typing import Any, Dict
 
 from docutils.utils import column_width
 from mistune import Markdown
-from mistune.plugins import _plugins
 from mistune.core import BaseRenderer
+from mistune.plugins import _plugins
 
 from .parse import RestBlockParser, RestInlineParser
 
-_cached_modules = {}
-
+CACHED_MODULES: Dict[str, Any] = {}
 DEFAULT_PLUGINS = ["strikethrough", "footnotes", "table"]
 
 PROLOG = """\
@@ -197,11 +197,7 @@ class RestRenderer(BaseRenderer):
 
         :param text: text content for inline code.
         """
-        cannot_inline = (
-            "``" in text or
-            text[0] in [" ", "`"] or
-            text[-1] in [" ", "`"]
-        )
+        cannot_inline = "``" in text or text[0] in [" ", "`"] or text[-1] in [" ", "`"]
         if cannot_inline:
             # actually, docutils split spaces in literal
             return self._raw_html(
@@ -361,8 +357,8 @@ class RestMarkdown(Markdown):
         plugins_str = plugins or [_plugins[p] for p in DEFAULT_PLUGINS]
         plugins = []
         for plugin_str in plugins_str:
-            if plugin_str in _cached_modules:
-                plugins.append(_cached_modules[plugin_str])
+            if plugin_str in CACHED_MODULES:
+                plugins.append(CACHED_MODULES[plugin_str])
             else:
                 if isinstance(plugin_str, str):
                     module_path, func_name = plugin_str.rsplit(".", 1)
@@ -371,7 +367,7 @@ class RestMarkdown(Markdown):
                 else:
                     # Presumably a function has been passed
                     plugin = plugin_str
-                _cached_modules[plugin_str] = plugin
+                CACHED_MODULES[plugin_str] = plugin
                 plugins.append(plugin)
 
         super().__init__(renderer, block=block, inline=inline, plugins=plugins)

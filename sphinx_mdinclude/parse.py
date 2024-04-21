@@ -1,4 +1,3 @@
-import re
 from typing import Any, Dict, Match, Tuple
 
 from mistune import BlockParser, InlineParser
@@ -13,13 +12,15 @@ Element = Tuple[str, ...]
 
 class RestBlockParser(BlockParser):
     SPECIFICATION = BlockParser.SPECIFICATION.copy()
-    SPECIFICATION |= {
-        "directive": r"(?ms:^(?P<directive_1> *\.\..*?)\n(?=\S))",
-        "oneline_directive": r"(?ms:^(?P<directive_2> *\.\..*?)$)",
-        "rest_code_block": r"(?m:^::\s*$)",
-    }
+    SPECIFICATION.update(
+        {
+            "directive": r"(?ms:^(?P<directive_1> *\.\..*?)\n(?=\S))",
+            "oneline_directive": r"(?ms:^(?P<directive_2> *\.\..*?)$)",
+            "rest_code_block": r"(?m:^::\s*$)",
+        }
+    )
 
-    DEFAULT_RULES = BlockParser.DEFAULT_RULES + (
+    DEFAULT_RULES = BlockParser.DEFAULT_RULES + (  # type: ignore[has-type]
         "directive",
         "oneline_directive",
         "rest_code_block",
@@ -54,13 +55,15 @@ class RestInlineParser(InlineParser):
     )
 
     SPECIFICATION = InlineParser.SPECIFICATION.copy()
-    SPECIFICATION |= {
-        "inline_html": INLINE_HTML,
-        "inline_math": r"`\$(?P<math_1>.*?)\$`",
-        "rest_role": r":.*?:`.*?`|`[^`]+`:.*?:",
-        "rest_link": r"`[^`]*?`_",
-        "eol_literal_marker": r"(?P<eol_space>\s+)?::\s*$",
-    }
+    SPECIFICATION.update(
+        {
+            "inline_html": INLINE_HTML,
+            "inline_math": r"`\$(?P<math_1>.*?)\$`",
+            "rest_role": r":.*?:`.*?`|`[^`]+`:.*?:",
+            "rest_link": r"`[^`]*?`_",
+            "eol_literal_marker": r"(?P<eol_space>\s+)?::\s*$",
+        }
+    )
 
     # Order is important: need these rules to be checked before the
     # default rules
@@ -69,7 +72,7 @@ class RestInlineParser(InlineParser):
         "rest_role",
         "rest_link",
         "eol_literal_marker",
-    ) + InlineParser.DEFAULT_RULES
+    ) + InlineParser.DEFAULT_RULES  # type: ignore[has-type]
 
     def parse_rest_role(self, m: Match, state: InlineState) -> int:
         """Pass through rest role."""
