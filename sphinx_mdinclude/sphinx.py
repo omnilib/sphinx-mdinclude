@@ -4,23 +4,16 @@ Sphinx extension
 
 import os
 import os.path
+from typing import Any, Dict, List, Union
 
 from docutils import io, statemachine, utils
+from docutils.io import error_string as ErrorString
+from docutils.nodes import document as Document
 from docutils.parsers import rst
 from docutils.parsers.rst import directives as rst_directives
-
-try:  # new
-    from docutils.io import (  # type: ignore  # typeshed  #8716
-        error_string as ErrorString,
-    )
-
-    SafeString = str
-except ImportError:  # old
-    from docutils.core import ErrorString  # type: ignore
-    from docutils.utils import SafeString  # type: ignore
+from sphinx.application import Sphinx
 
 from . import RestMarkdown
-
 from .__version__ import __version__
 
 
@@ -28,7 +21,11 @@ class MdIncludeParser(rst.Parser, object):
     # Explicitly tell supported formats to sphinx
     supported = ("markdown", "md", "mkd")
 
-    def parse(self, inputstrings, document):
+    def parse(
+        self,
+        inputstrings: Union[str, statemachine.StringList],
+        document: Document,
+    ) -> None:
         if isinstance(inputstrings, statemachine.StringList):
             inputstring = "\n".join(inputstrings)
         else:
@@ -57,7 +54,7 @@ class MdInclude(rst.Directive):
         "end-line": int,
     }
 
-    def run(self):
+    def run(self) -> List[Any]:
         """Most of this method is from ``docutils.parser.rst.Directive``.
 
         docutils version: 0.12
@@ -92,7 +89,7 @@ class MdInclude(rst.Directive):
             raise self.severe(
                 'Problems with "%s" directive path:\n'
                 'Cannot encode input file path "%s" '
-                "(wrong locale?)." % (self.name, SafeString(path))
+                "(wrong locale?)." % (self.name, str(path))
             )
         except IOError as error:
             raise self.severe(
@@ -128,7 +125,7 @@ class MdInclude(rst.Directive):
         return []
 
 
-def setup(app):
+def setup(app: Sphinx) -> Dict[str, Union[str, bool]]:
     """When used for sphinx extension."""
     app.add_config_value("no_underscore_emphasis", False, "env")
     app.add_config_value("md_parse_relative_links", False, "env")
@@ -137,9 +134,9 @@ def setup(app):
     app.add_source_suffix(".md", "markdown")
     app.add_source_parser(MdIncludeParser)
     app.add_directive("mdinclude", MdInclude)
-    metadata = dict(
-        version=__version__,
-        parallel_read_safe=True,
-        parallel_write_safe=True,
-    )
+    metadata: Dict[str, Union[str, bool]] = {
+        "version": __version__,
+        "parallel_read_safe": True,
+        "parallel_write_safe": True,
+    }
     return metadata

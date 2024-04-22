@@ -2,7 +2,7 @@ from typing import Any, Dict, Match, Tuple
 
 from mistune import BlockParser, InlineParser
 from mistune.core import BlockState, InlineState
-from mistune.inline_parser import HTML_ATTRIBUTES, HTML_TAGNAME
+from mistune.helpers import HTML_ATTRIBUTES, HTML_TAGNAME
 
 
 State = Dict[str, Any]
@@ -26,17 +26,17 @@ class RestBlockParser(BlockParser):
         "rest_code_block",
     )
 
-    def parse_directive(self, m: Match, state: BlockState) -> int:
+    def parse_directive(self, m: Match[str], state: BlockState) -> int:
         state.append_token({"type": "directive", "raw": m.group("directive_1")})
         return m.end()
 
-    def parse_oneline_directive(self, m: Match, state: BlockState) -> int:
+    def parse_oneline_directive(self, m: Match[str], state: BlockState) -> int:
         # reuse directive output
         state.append_token({"type": "directive", "raw": m.group("directive_2")})
         # $ does not count '\n'
         return m.end() + 1
 
-    def parse_rest_code_block(self, m: Match, state: BlockState) -> int:
+    def parse_rest_code_block(self, m: Match[str], state: BlockState) -> int:
         state.append_token({"type": "rest_code_block", "text": ""})
         # $ does not count '\n'
         return m.end() + 1
@@ -74,22 +74,22 @@ class RestInlineParser(InlineParser):
         "eol_literal_marker",
     ) + InlineParser.DEFAULT_RULES  # type: ignore[has-type]
 
-    def parse_rest_role(self, m: Match, state: InlineState) -> int:
+    def parse_rest_role(self, m: Match[str], state: InlineState) -> int:
         """Pass through rest role."""
         state.append_token({"type": "rest_role", "raw": m.group(0)})
         return m.end()
 
-    def parse_rest_link(self, m: Match, state: InlineState) -> int:
+    def parse_rest_link(self, m: Match[str], state: InlineState) -> int:
         """Pass through rest link."""
         state.append_token({"type": "rest_link", "raw": m.group(0)})
         return m.end()
 
-    def parse_inline_math(self, m: Match, state: InlineState) -> int:
+    def parse_inline_math(self, m: Match[str], state: InlineState) -> int:
         """Pass through inline math."""
         state.append_token({"type": "inline_math", "raw": m.group("math_1")})
         return m.end()
 
-    def parse_eol_literal_marker(self, m: Match, state: InlineState) -> int:
+    def parse_eol_literal_marker(self, m: Match[str], state: InlineState) -> int:
         """Pass through rest link."""
         marker = ":" if m.group("eol_space") is None else ""
         state.append_token({"type": "eol_literal_marker", "raw": marker})
