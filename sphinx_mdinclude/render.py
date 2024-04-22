@@ -2,11 +2,11 @@ import re
 import textwrap
 from functools import partial
 from importlib import import_module
-from typing import Any, Dict
+from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple
 
 from docutils.utils import column_width
 from mistune import Markdown
-from mistune.core import BaseRenderer
+from mistune.core import BaseRenderer, BlockState
 from mistune.plugins import _plugins
 
 from .parse import RestBlockParser, RestInlineParser
@@ -34,13 +34,13 @@ class RestRenderer(BaseRenderer):
         6: "#",
     }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         self._indent_block = partial(textwrap.indent, prefix=self.indent)
         super().__init__(*args, **kwargs)
 
-    def render_token(self, token, state):
+    def render_token(self, token: Dict[str, Any], state: BlockState) -> str:
         # based on mistune 3.0.2, mistune/renderers/html.py
-        func = self._get_method(token["type"])
+        func: Callable[..., str] = self._get_method(token["type"])
         attrs = token.get("attrs")
         style = token.get("style")
 
@@ -68,14 +68,14 @@ class RestRenderer(BaseRenderer):
         else:
             return func(text)
 
-    def finalize(self, data):
+    def finalize(self, data: Iterable[str]) -> str:
         return "".join(data)
 
-    def _raw_html(self, html):
+    def _raw_html(self, html: str) -> str:
         self._include_raw_html = True
         return r":raw-html-md:`{}`".format(html)
 
-    def block_code(self, code, style, info=None):
+    def block_code(self, code: str, style: str, info: Optional[str] = None) -> str:
         if info == "math":
             first_line = "\n.. math::\n\n"
         elif info:
@@ -86,21 +86,21 @@ class RestRenderer(BaseRenderer):
         newline = "\n" if style == "indent" else ""
         return first_line + self._indent_block(code + newline)
 
-    def block_quote(self, text):
+    def block_quote(self, text: str) -> str:
         # text includes some empty line
         return "\n..\n\n{}\n\n".format(self._indent_block(text.strip("\n")))
 
-    def block_text(self, text):
+    def block_text(self, text: str) -> str:
         return text
 
-    def block_html(self, html):
+    def block_html(self, html: str) -> str:
         """Rendering block level pure html content.
 
         :param html: text content of the html snippet.
         """
         return "\n\n.. raw:: html\n\n" + self._indent_block(html) + "\n"
 
-    def heading(self, text, level, **attrs):
+    def heading(self, text: str, level: int, **attrs: Any) -> str:
         """Rendering header/heading tags like ``<h1>`` ``<h2>``.
 
         :param text: rendered text content for the header.
@@ -109,11 +109,11 @@ class RestRenderer(BaseRenderer):
         """
         return "\n{0}\n{1}\n".format(text, self.hmarks[level] * column_width(text))
 
-    def thematic_break(self):
+    def thematic_break(self) -> str:
         """Rendering method for ``<hr>`` tag."""
         return "\n----\n"
 
-    def list(self, text, ordered, **attrs):
+    def list(self, text: str, ordered: bool, **attrs: Any) -> str:
         """Rendering list tags like ``<ul>`` and ``<ol>``.
 
         :param text: body contents of the list.
@@ -128,15 +128,15 @@ class RestRenderer(BaseRenderer):
         result = "\n{}\n".format("\n".join(lines)).replace(self.list_marker, mark)
         return result
 
-    def list_item(self, text):
+    def list_item(self, text: str) -> str:
         """Rendering list item snippet. Like ``<li>``."""
         return "\n" + self.list_marker + text
 
-    def paragraph(self, text):
+    def paragraph(self, text: str) -> str:
         """Rendering paragraph tags. Like ``<p>``."""
         return "\n" + text + "\n"
 
-    def table(self, body):
+    def table(self, body: str) -> str:
         """Rendering table element. Wrap header and body in it.
 
         :param header: header part of the table.
@@ -146,13 +146,13 @@ class RestRenderer(BaseRenderer):
         table = table + self._indent_block(body) + "\n"
         return table
 
-    def table_head(self, text):
+    def table_head(self, text: str) -> str:
         return ":header-rows: 1\n\n" + self.table_row(text)
 
-    def table_body(self, text):
+    def table_body(self, text: str) -> str:
         return text
 
-    def table_row(self, content):
+    def table_row(self, content: str) -> str:
         """Rendering a table row. Like ``<tr>``.
 
         :param content: content of current table row.
@@ -166,7 +166,7 @@ class RestRenderer(BaseRenderer):
                 clist.append("  " + c)
         return "\n".join(clist) + "\n"
 
-    def table_cell(self, content, align=None, head=False):
+    def table_cell(self, content: str, align: None = None, head: bool = False) -> str:
         """Rendering a table cell. Like ``<th>`` ``<td>``.
 
         :param content: content of current table cell.
@@ -175,24 +175,24 @@ class RestRenderer(BaseRenderer):
         """
         return "- " + content + "\n"
 
-    def double_emphasis(self, text):
+    def double_emphasis(self, text: str) -> str:
         """Rendering **strong** text.
 
         :param text: text content for emphasis.
         """
         return r"**{}**".format(text)
 
-    def emphasis(self, text):
+    def emphasis(self, text: str) -> str:
         """Rendering *emphasis* text.
 
         :param text: text content for emphasis.
         """
         return r"*{}*".format(text)
 
-    def strong(self, text):
+    def strong(self, text: str) -> str:
         return r"**{}**".format(text)
 
-    def codespan(self, text):
+    def codespan(self, text: str) -> str:
         """Rendering inline `code` text.
 
         :param text: text content for inline code.
@@ -208,29 +208,29 @@ class RestRenderer(BaseRenderer):
         else:
             return r"``{}``".format(text)
 
-    def linebreak(self):
+    def linebreak(self) -> str:
         """Rendering line break like ``<br>``."""
         return " " + self._raw_html("<br />") + "\n"
 
-    def softbreak(self):
+    def softbreak(self) -> str:
         """Rendering soft line break."""
         return "\n"
 
-    def strikethrough(self, text):
+    def strikethrough(self, text: str) -> str:
         """Rendering ~~strikethrough~~ text.
 
         :param text: text content for strikethrough.
         """
         return self._raw_html("<del>{}</del>".format(text))
 
-    def text(self, text):
+    def text(self, text: str) -> str:
         """Rendering unformatted text.
 
         :param text: text content.
         """
         return text
 
-    def link(self, text, url, title=None):
+    def link(self, text: str, url: str, title: Optional[str] = None) -> str:
         """Rendering a given link with content and title.
 
         :param text: text content for description.
@@ -256,7 +256,7 @@ class RestRenderer(BaseRenderer):
             target=url, text=text, underscore=underscore
         )
 
-    def image(self, text, url, title=None):
+    def image(self, text: str, url: str, title: Optional[str] = None) -> str:
         """Rendering a image with title and text.
 
         :param text: alt text of the image.
@@ -275,7 +275,7 @@ class RestRenderer(BaseRenderer):
             ]
         )
 
-    def image_link(self, url, target, alt):
+    def image_link(self, url: str, target: str, alt: str) -> str:
         return "\n".join(
             [
                 "",
@@ -286,18 +286,18 @@ class RestRenderer(BaseRenderer):
             ]
         )
 
-    def inline_html(self, html):
+    def inline_html(self, html: str) -> str:
         """Rendering span level pure html content.
 
         :param html: text content of the html snippet.
         """
         return self._raw_html(html)
 
-    def newline(self):
+    def newline(self) -> str:
         """Rendering newline element."""
         return ""
 
-    def footnote_ref(self, key, index):
+    def footnote_ref(self, key: str, index: int) -> str:
         """Rendering the ref anchor of a footnote.
 
         :param key: identity key for the footnote.
@@ -305,7 +305,7 @@ class RestRenderer(BaseRenderer):
         """
         return r"[#fn-{}]_".format(key)
 
-    def footnote_item(self, text, key, index):
+    def footnote_item(self, text: str, key: str, index: int) -> str:
         """Rendering a footnote item.
 
         :param key: identity key for the footnote.
@@ -313,7 +313,7 @@ class RestRenderer(BaseRenderer):
         """
         return ".. [#fn-{0}] {1}\n".format(key, text.strip())
 
-    def footnotes(self, text):
+    def footnotes(self, text: str) -> str:
         """Wrapper for all footnotes.
 
         :param text: contents of all footnotes.
@@ -325,32 +325,39 @@ class RestRenderer(BaseRenderer):
 
     """Below outputs are for rst."""
 
-    def rest_role(self, raw):
+    def rest_role(self, raw: str) -> str:
         return raw
 
-    def rest_link(self, raw):
+    def rest_link(self, raw: str) -> str:
         return raw
 
-    def inline_math(self, raw):
+    def inline_math(self, raw: str) -> str:
         """Extension of recommonmark."""
         return r":math:`{}`".format(raw)
 
-    def eol_literal_marker(self, raw):
+    def eol_literal_marker(self, raw: str) -> str:
         """Extension of recommonmark."""
         return raw
 
-    def directive(self, text):
+    def directive(self, text: str) -> str:
         return "\n" + text
 
-    def rest_code_block(self, text):
+    def rest_code_block(self, text: str) -> str:
         return "\n\n"
 
-    def blank_line(self):
+    def blank_line(self) -> str:
         return ""
 
 
 class RestMarkdown(Markdown):
-    def __init__(self, renderer=None, block=None, inline=None, plugins=None, **kwargs):
+    def __init__(
+        self,
+        renderer: Optional[BaseRenderer] = None,
+        block: Optional[RestBlockParser] = None,
+        inline: Optional[RestInlineParser] = None,
+        plugins: Optional[List[Any]] = None,
+        **kwargs: Any,
+    ) -> None:
         renderer = renderer or RestRenderer()
         block = block or RestBlockParser()
         inline = inline or RestInlineParser()
@@ -372,18 +379,22 @@ class RestMarkdown(Markdown):
 
         super().__init__(renderer, block=block, inline=inline, plugins=plugins)
 
-    def parse(self, text):
+    def parse(
+        self,
+        text: str,
+        state: Optional[BlockState] = None,
+    ) -> Tuple[str, Optional[BlockState]]:
         output, state = super().parse(text)
         output = self.post_process(output)
 
         return output, state
 
-    def post_process(self, text):
+    def post_process(self, text: str) -> str:
         if self.renderer._include_raw_html:
             return PROLOG + text
         else:
             return text
 
 
-def convert(text, **kwargs):
-    return RestMarkdown(**kwargs)(text)
+def convert(text: str, **kwargs: Any) -> str:
+    return str(RestMarkdown(**kwargs)(text))

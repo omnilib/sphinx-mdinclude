@@ -38,14 +38,14 @@ class SmokeTest(unittest.TestCase):
         platform.system() == "Windows",
         "inconsistent column widths on Windows",
     )
-    def test_convert(self):
+    def test_convert(self) -> None:
         content = TEST_MD.read_text()
         expected = TEST_RST.read_text()
 
         result = convert(content)
         self.assertEqual(expected, result)
 
-    def test_mdinclude_basic(self):
+    def test_mdinclude_basic(self) -> None:
         content = dedent(
             f"""
             .. mdinclude:: {TEST_MD}
