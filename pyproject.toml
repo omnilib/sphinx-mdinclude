@@ -45,7 +45,7 @@ dev = [
     "sphinx==7.1.2; python_version < '3.9'",
     "sphinx==7.3.7; python_version >= '3.9'",
     "ufmt==2.5.1",
-    "usort==1.0.7",
+    "usort==1.0.8.post1",
 ]
 
 [project.urls]
