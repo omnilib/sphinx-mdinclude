@@ -241,6 +241,17 @@ class RestRenderer(BaseRenderer):
             text = re.sub(r":target: (.*)\n", f":target: {url}\n", text)
             return text
 
+        if text.startswith("``") and text.endswith("``"):
+            # Return raw HTML for inline code:
+            html = (
+                '<code class="docutils literal">'
+                '<span class="pre">{}</span>'
+                "</code>".format(text[2:-2].replace("`", "&#96;"))
+            )
+            return self._raw_html(
+                '<a href="{url}">{text}</a>'.format(url=url, text=html)
+            )
+
         underscore = "_"
         if title:
             return self._raw_html(

@@ -147,6 +147,17 @@ class TestInlineMarkdown(RendererTestBase):
             '<span class="pre">&#96;a&#96;</span></code>`',
         )
 
+    def test_inline_code_within_link(self) -> None:
+        src = "[`foobar`](https://example.com)"
+        out = self.conv(src)
+        self.assertEqual(
+            out.strip(),
+            ".. role:: raw-html-md(raw)\n"
+            "   :format: html\n\n\n"
+            ':raw-html-md:`<a href="https://example.com"><code class="docutils literal">'
+            '<span class="pre">foobar</span></code></a>`',
+        )
+
     def test_strikethrough(self) -> None:
         src = "~~a~~"
         self.conv(src)
