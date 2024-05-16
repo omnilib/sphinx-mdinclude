@@ -33,7 +33,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "docutils==0.20.1; python_version < '3.9'",
-    "docutils==0.21.1; python_version >= '3.9'",
+    "docutils==0.21.2; python_version >= '3.9'",
     "mistune==3.0.2",
 
     "attribution==1.7.1",
