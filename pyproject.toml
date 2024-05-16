@@ -28,6 +28,7 @@ dependencies = [
     "mistune >=3.0,<4.0",
     "docutils >=0.16,<1.0",
     "pygments >= 2.8",
+    "sphinx >= 6",
 ]
 
 [project.optional-dependencies]
